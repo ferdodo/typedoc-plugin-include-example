@@ -1,0 +1,23 @@
+{
+  "name": "typedoc-plugin-include-example",
+  "version": "1.0.0",
+  "description": "Typedoc plugin to include files as example",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ferdodo/typedoc-plugin-include-example"
+  },
+  "keywords": [
+    "typedoc",
+    "plugin",
+    "example",
+    "example"
+  ],
+  "author": "Thomas Riffard",
+  "scripts": {
+    "build": "tsc && typedoc --plugin . example/add.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.9",
+    "typedoc": "^0.25.1"
+  }
+}
