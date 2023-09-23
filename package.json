@@ -9,7 +9,6 @@
   "keywords": [
     "typedoc",
     "plugin",
-    "example",
     "example"
   ],
   "author": "Thomas Riffard",
@@ -17,7 +16,9 @@
     "build": "tsc && typedoc --plugin . example/add.ts"
   },
   "devDependencies": {
-    "@types/node": "^20.5.9",
+    "@types/node": "^20.5.9"
+  },
+  "peerDependencies": {
     "typedoc": "^0.25.1"
   }
 }
