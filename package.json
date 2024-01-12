@@ -1,6 +1,6 @@
 {
   "name": "typedoc-plugin-include-example",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Typedoc plugin to include files as example",
   "repository": {
     "type": "git",
@@ -9,7 +9,9 @@
   "keywords": [
     "typedoc",
     "plugin",
-    "example"
+    "example",
+    "typedocplugin",
+    "typedoc-plugin"
   ],
   "author": "Thomas Riffard",
   "scripts": {
