@@ -1,0 +1,5 @@
+services:
+  docs:
+    build: .
+    ports:
+      - "1117:80"
