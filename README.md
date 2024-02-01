@@ -18,6 +18,18 @@ npm install typedoc-plugin-include-example --save-dev
 function myFunction() {
     // ...
 }
+``` 
+
+@includeExample can also take in line numbers to include a specific range of lines from the file:
+```typescript
+/**
+ * This is a sample function of how to include lines 1-5 and 10 from `path/to/your/example.ts`
+ *
+ * @includeExample path/to/your/example.ts:1-5,10
+ */
+function myFunction() {
+    // ...
+}
 ```
 
 2. When generating documentation with TypeDoc, make sure to include the plugin:
