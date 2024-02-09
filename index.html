@@ -18,7 +18,10 @@
 <a id="md:usage" class="tsd-anchor"></a><h2><a href="#md:usage">Usage</a></h2><ol>
 <li>In your TypeScript comments, add the <code>@includeExample</code> directive followed by the path of the file you wish to include:</li>
 </ol>
-<pre><code class="language-typescript"><span class="hl-4">/**</span><br/><span class="hl-4"> * This is a sample function.</span><br/><span class="hl-4"> *</span><br/><span class="hl-4"> * </span><span class="hl-3">@includeExample</span><span class="hl-4"> path/to/your/example.ts</span><br/><span class="hl-4"> */</span><br/><span class="hl-3">function</span><span class="hl-1"> </span><span class="hl-0">myFunction</span><span class="hl-1">() {</span><br/><span class="hl-1">    </span><span class="hl-4">// ...</span><br/><span class="hl-1">}</span>
+<pre><code class="language-typescript"><span class="hl-4">/**</span><br/><span class="hl-4"> * This is a sample function.</span><br/><span class="hl-4"> *</span><br/><span class="hl-4"> * </span><span class="hl-3">@includeExample</span><span class="hl-4"> path/to/your/example.ts</span><br/><span class="hl-4"> */</span><br/><span class="hl-3">function</span><span class="hl-1"> </span><span class="hl-0">myFunction</span><span class="hl-1">() {</span><br/><span class="hl-1">  </span><span class="hl-4">// ...</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<p><code>@includeExample</code> can also take in line numbers to include a specific range of lines from the file:</p>
+<pre><code class="language-typescript"><span class="hl-4">/**</span><br/><span class="hl-4"> * This is a sample function of how to include lines 1-5 and 10 from `path/to/your/example.ts`</span><br/><span class="hl-4"> *</span><br/><span class="hl-4"> * </span><span class="hl-3">@includeExample</span><span class="hl-4"> path/to/your/example.ts:1-5,10</span><br/><span class="hl-4"> */</span><br/><span class="hl-3">function</span><span class="hl-1"> </span><span class="hl-0">myFunction</span><span class="hl-1">() {</span><br/><span class="hl-1">  </span><span class="hl-4">// ...</span><br/><span class="hl-1">}</span>
 </code><button>Copy</button></pre>
 <ol start="2">
 <li>When generating documentation with TypeDoc, make sure to include the plugin:</li>
