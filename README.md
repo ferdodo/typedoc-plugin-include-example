@@ -2,6 +2,8 @@ The `typedoc-plugin-include-example` plugin allows TypeDoc users to include code
 
 ## Installation
 
+
+
 ```bash
 npm install typedoc-plugin-include-example --save-dev
 ```
