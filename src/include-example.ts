@@ -1,5 +1,7 @@
 import { Comment } from 'typedoc';
 
+const test: string = 3;
+
 export function includeExample(comment: Comment, example: string): void {
 	comment.summary.push({
 		kind: 'code',
