@@ -1,6 +1,6 @@
 {
   "name": "typedoc-plugin-include-example",
-  "version": "1.0.2",
+  "version": "1.2.0",
   "description": "Typedoc plugin to include files as example",
   "repository": {
     "type": "git",
