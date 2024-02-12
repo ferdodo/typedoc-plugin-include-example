@@ -18,6 +18,7 @@ jobs:
 
       - name: Install and Build 🔧
         run: |
+          npx playwright install-deps
           npm install
+          npx playwright install
           npm run build
-

@@ -15,9 +15,10 @@
   ],
   "author": "Thomas Riffard",
   "scripts": {
-    "build": "tsc && typedoc --plugin . example/add.ts"
+    "build": "tsc && typedoc --plugin . example/add.ts && playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.41.2",
     "@types/node": "^20.5.9"
   },
   "peerDependencies": {
