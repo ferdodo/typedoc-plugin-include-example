@@ -4,6 +4,6 @@
  *
  * @includeExample ./example/basic-usage.example.ts
  */
-export function basicUsageDemo(): number {
+export function basicUsage(): number {
 	return 42;
 }

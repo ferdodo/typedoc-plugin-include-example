@@ -2,7 +2,7 @@
 // and is included to the documentation of add.ts
 // using the @includeExample directive.
 
-import { basicUsageDemo } from "./basic-usage.demo";
+import { basicUsage } from "./basic-usage.demo";
 
-const answer = basicUsageDemo();
+const answer = basicUsage();
 console.log(answer); // 42

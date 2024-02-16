@@ -15,7 +15,7 @@
   ],
   "author": "Thomas Riffard",
   "scripts": {
-    "build": "tsc && typedoc --plugin . example/*.demo.ts && playwright test"
+    "build": "tsc && typedoc --plugin . example/index.ts && playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.41.2",

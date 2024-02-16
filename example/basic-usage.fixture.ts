@@ -3,7 +3,7 @@ import path from "path";
 
 export const test = base.extend({
 	page: async function({ page }, use) {
-		const filePath = path.join(process.cwd(), "docs/functions/basic_usage_demo.basicUsageDemo.html");
+		const filePath = path.join(process.cwd(), "docs/functions/basicUsage.html");
 		await page.goto(`file://${ filePath }`);
 		await use(page);
 	}
