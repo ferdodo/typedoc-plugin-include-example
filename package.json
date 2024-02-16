@@ -1,27 +1,28 @@
 {
-  "name": "typedoc-plugin-include-example",
-  "version": "1.2.0",
-  "description": "Typedoc plugin to include files as example",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ferdodo/typedoc-plugin-include-example"
-  },
-  "keywords": [
-    "typedoc",
-    "plugin",
-    "example",
-    "typedocplugin",
-    "typedoc-plugin"
-  ],
-  "author": "Thomas Riffard",
-  "scripts": {
-    "build": "tsc && typedoc --plugin . example/index.ts && playwright test"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.41.2",
-    "@types/node": "^20.5.9"
-  },
-  "peerDependencies": {
-    "typedoc": "^0.25.1"
-  }
+	"name": "typedoc-plugin-include-example",
+	"version": "1.2.0",
+	"description": "Typedoc plugin to include files as example",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ferdodo/typedoc-plugin-include-example"
+	},
+	"keywords": [
+		"typedoc",
+		"plugin",
+		"example",
+		"typedocplugin",
+		"typedoc-plugin"
+	],
+	"author": "Thomas Riffard",
+	"scripts": {
+		"build": "tsc && typedoc --plugin . example/index.ts && playwright test && dprint check"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.41.2",
+		"@types/node": "^20.5.9",
+		"dprint": "^0.45.0"
+	},
+	"peerDependencies": {
+		"typedoc": "^0.25.1"
+	}
 }

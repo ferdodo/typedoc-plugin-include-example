@@ -1,8 +1,8 @@
-import { Comment } from 'typedoc';
+import { Comment } from "typedoc";
 
 export function includeExample(comment: Comment, example: string): void {
 	comment.summary.push({
-		kind: 'code',
+		kind: "code",
 		text: `\n\n### Example\n\`\`\`\n\n${example}\n\`\`\``
 	});
 

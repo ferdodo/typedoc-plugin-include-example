@@ -1,4 +1,4 @@
-import { Converter, Application } from 'typedoc';
+import { Converter, Application } from "typedoc";
 import { processComments } from "./src/process-comments";
 
 export function load(application: Application) {
