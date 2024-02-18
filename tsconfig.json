@@ -6,5 +6,8 @@
 		"target": "es6",
 		"module": "nodenext",
 		"moduleResolution": "nodenext"
-	}
+	},
+	"exclude": [
+		"**/*test.ts"
+	]
 }

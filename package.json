@@ -15,12 +15,13 @@
 	],
 	"author": "Thomas Riffard",
 	"scripts": {
-		"build": "tsc && typedoc --plugin . example/index.ts && playwright test && dprint check"
+		"build": "tsc && vitest run && typedoc --plugin . example/index.ts && playwright test && dprint check"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.41.2",
 		"@types/node": "^20.5.9",
-		"dprint": "^0.45.0"
+		"dprint": "^0.45.0",
+		"vitest": "^1.3.0"
 	},
 	"peerDependencies": {
 		"typedoc": "^0.25.1"
