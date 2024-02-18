@@ -11,7 +11,7 @@ export function applyLineSelection(content: string, includeExampleTag: IncludeEx
 		const line = lines[lineNumber - 1];
 
 		if (line === undefined) {
-			throw new Error(`Line number ${line} is out of range for file ${includeExampleTag.path}`);
+			throw new Error(`Line number ${lineNumber} is out of range for file ${includeExampleTag.path}`);
 		}
 
 		return line;

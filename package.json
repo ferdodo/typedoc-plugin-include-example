@@ -15,12 +15,15 @@
 	],
 	"author": "Thomas Riffard",
 	"scripts": {
-		"build": "tsc && tsc --project vitest.tsconfig.json && vitest run && typedoc --plugin . example/index.ts && playwright test && dprint check"
+		"build": "vitest run && stryker run && tsc && tsc --project vitest.tsconfig.json && typedoc --plugin . example/index.ts && playwright test && dprint check"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.41.2",
+		"@stryker-mutator/core": "^8.2.3",
+		"@stryker-mutator/vitest-runner": "^8.2.3",
 		"@types/node": "^20.5.9",
 		"dprint": "^0.45.0",
+		"stryker-cli": "^1.0.2",
 		"vitest": "^1.3.0"
 	},
 	"peerDependencies": {

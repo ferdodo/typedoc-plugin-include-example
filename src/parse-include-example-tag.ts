@@ -5,9 +5,9 @@ export function parseIncludeExampleTag(tag: string): IncludeExampleTag {
 	const splittedTag = tag.split(":")
 		[Symbol.iterator]();
 
-	const path: string | undefined = splittedTag.next().value;
+	const path: string = splittedTag.next().value;
 
-	if (path === undefined) {
+	if (!path) {
 		throw new Error("Path not found !");
 	}
 

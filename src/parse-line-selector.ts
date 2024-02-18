@@ -3,15 +3,6 @@ export function parseLineSelector(lineSelectorString: string): number[] {
 		const lineRange: string[] = lineSelectorString.split("-");
 		const startString: string | undefined = lineRange[0];
 		const endString: string | undefined = lineRange[1];
-
-		if (startString === undefined) {
-			throw new Error("Failed to parse range start !");
-		}
-
-		if (endString === undefined) {
-			throw new Error("Failed to parse range end !");
-		}
-
 		const start: number = Number.parseInt(startString);
 		const end: number = Number.parseInt(endString);
 
@@ -24,11 +15,11 @@ export function parseLineSelector(lineSelectorString: string): number[] {
 		}
 
 		if (start < 1) {
-			throw new Error("Range start is negative !");
+			throw new Error("Range start not positive !");
 		}
 
-		if (start > end) {
-			throw new Error("Range start is greater than range end !");
+		if (start >= end) {
+			throw new Error("Range start is greater or equal to range end !");
 		}
 
 		const range: number[] = [];

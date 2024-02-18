@@ -15,3 +15,9 @@ test("it should parse include example tag with multiple line selectors", functio
 	const result = parseIncludeExampleTag("path/to/file:2-4,15");
 	expect(result).toEqual({ path: "path/to/file", lines: [2, 3, 4, 15] });
 });
+
+test("it should throw on empty path", function() {
+	expect(
+		() => parseIncludeExampleTag("")
+	).toThrowError("Path not found !");
+});
