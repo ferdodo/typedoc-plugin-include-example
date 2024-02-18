@@ -15,7 +15,7 @@
 	],
 	"author": "Thomas Riffard",
 	"scripts": {
-		"build": "tsc && vitest run && typedoc --plugin . example/index.ts && playwright test && dprint check"
+		"build": "tsc && tsc --project vitest.tsconfig.json && vitest run && typedoc --plugin . example/index.ts && playwright test && dprint check"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.41.2",

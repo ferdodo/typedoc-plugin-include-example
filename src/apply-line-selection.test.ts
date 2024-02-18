@@ -5,7 +5,7 @@ test("It should select lines from file", function() {
 	const file = "hello\nthis\nis\na\nmultiline\nfile";
 
 	const includeExampleFile = {
-		file: "fake/file",
+		path: "fake/file",
 		lines: [2, 4, 6]
 	};
 
