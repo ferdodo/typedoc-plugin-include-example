@@ -2,8 +2,7 @@ import { test, expect } from "./multiple-line-includes.fixture";
 
 test("Should inject a title named 'Example'", async function({ page }) {
 	await expect(
-		page.getByRole("heading", { level: 3 })
-			.getByRole("link", { name: "Example" })
+		page.getByRole("heading", { name: "Example", level: 3 })
 	).toBeVisible();
 });
 

@@ -8,7 +8,14 @@
 		"moduleResolution": "nodenext",
 		"skipLibCheck": true
 	},
+	"include": [
+		"index.ts",
+		"src"
+	],
 	"exclude": [
-		"**/*.test.ts"
+		"src/*.test.ts",
+		"example/*.ts",
+		"playwright.config.ts",
+		"vite.config.ts"
 	]
 }
