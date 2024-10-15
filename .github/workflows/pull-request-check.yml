@@ -20,5 +20,7 @@ jobs:
         run: |
           npx playwright install-deps
           npm install
+          npm audit --audit-level=moderate
+          npm outdated typedoc
           npx playwright install
           npm run build
