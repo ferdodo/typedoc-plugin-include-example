@@ -6,10 +6,12 @@
 		"target": "es6",
 		"module": "nodenext",
 		"moduleResolution": "nodenext",
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"outDir": "dist",
+		"declaration": true,
+		"declarationDir": "dist"
 	},
 	"include": [
-		"index.ts",
 		"src"
 	],
 	"exclude": [

@@ -1,5 +1,21 @@
 services:
+  build:
+    build:
+      context: .
+      target: build
+
+  publish:
+    build:
+      context: .
+      target: publish
+    depends_on:
+      - docs
+
   docs:
-    build: .
+    build:
+      context: .
+      target: docs
+    depends_on:
+      - build
     ports:
       - "1117:80"

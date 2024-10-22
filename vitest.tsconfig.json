@@ -11,7 +11,6 @@
 		"*.ts"
 	],
 	"exclude": [
-		"index.ts",
 		"src"
 	]
 }

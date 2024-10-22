@@ -8,7 +8,6 @@
 		"example/*.demo.ts"
 	],
 	"exclude": [
-		"index.ts",
 		"src",
 		"example/*.spec.ts",
 		"example/*.fixture.ts",

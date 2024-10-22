@@ -1,4 +1,4 @@
-FROM node
+FROM node AS build
 WORKDIR /typedoc-plugin-include-example
 RUN npx playwright install-deps
 COPY package.json .
@@ -11,5 +11,11 @@ RUN npx playwright install
 COPY . .
 RUN npm run build
 
-FROM nginx
+FROM node AS publish
+WORKDIR /typedoc-plugin-include-example
+COPY --from=0 /typedoc-plugin-include-example/package.json .
+COPY --from=0 /typedoc-plugin-include-example/npm-shrinkwrap.json .
+COPY --from=0 /typedoc-plugin-include-example/dist dist
+
+FROM nginx AS docs
 COPY --from=0 /typedoc-plugin-include-example/docs /usr/share/nginx/html
