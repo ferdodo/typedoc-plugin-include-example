@@ -28,6 +28,7 @@ jobs:
           npm outdated typedoc
           npx playwright install
           npm run build
+          mv reports docs/reports
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
