@@ -7,7 +7,8 @@
 Include examples in your documentations.
 
 ```bash
-npm install --save-dev typedoc-plugin-include-example
+$ npm install --save-dev typedoc-plugin-include-example
+$ npx typedoc --plugin typedoc-plugin-include-example
 ```
 
 ```typescript
