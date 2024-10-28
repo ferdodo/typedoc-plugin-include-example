@@ -16,6 +16,7 @@ WORKDIR /typedoc-plugin-include-example
 COPY --from=0 /typedoc-plugin-include-example/package.json .
 COPY --from=0 /typedoc-plugin-include-example/npm-shrinkwrap.json .
 COPY --from=0 /typedoc-plugin-include-example/dist dist
+COPY --from=0 /typedoc-plugin-include-example/README.md README.md
 
 FROM nginx AS docs
 COPY --from=0 /typedoc-plugin-include-example/docs /usr/share/nginx/html
