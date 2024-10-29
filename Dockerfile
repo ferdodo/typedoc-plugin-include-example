@@ -20,6 +20,7 @@ COPY --from=0 /typedoc-plugin-include-example/README.md .
 COPY --from=0 /typedoc-plugin-include-example/LICENSE .
 COPY --from=0 /typedoc-plugin-include-example/CONTRIBUTING.md .
 COPY --from=0 /typedoc-plugin-include-example/CODE_OF_CONDUCT.md .
+RUN npm pack
 
 FROM nginx AS docs
 COPY --from=0 /typedoc-plugin-include-example/docs /usr/share/nginx/html
