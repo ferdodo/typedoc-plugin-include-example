@@ -1,6 +1,6 @@
 {
 	"name": "typedoc-plugin-include-example",
-	"version": "1.3.1",
+	"version": "1.3.2",
 	"description": "Typedoc plugin to include files as example",
 	"main": "dist/index.js",
 	"repository": {
@@ -14,7 +14,11 @@
 		"typedocplugin",
 		"typedoc-plugin"
 	],
-	"author": "Thomas Riffard",
+	"author": "Thomas Riffard (https://github.com/ferdodo)",
+	"contributors": [
+		"Jeremy Cherer (https://github.com/JavaLavaMT)",
+		"Rocky Warren (https://github.com/therockstorm)"
+	],
 	"scripts": {
 		"build": "vitest run && stryker run && tsc && tsc --project vitest.tsconfig.json && tsc --project typedoc.tsconfig.json && typedoc --tsconfig ./typedoc.tsconfig.json --plugin . example/index.ts && playwright test && dprint check"
 	},
