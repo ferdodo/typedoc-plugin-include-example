@@ -1,11 +1,11 @@
 {
 	"name": "typedoc-plugin-include-example",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "Typedoc plugin to include files as example",
 	"main": "dist/index.js",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/ferdodo/typedoc-plugin-include-example"
+		"url": "git+https://github.com/ferdodo/typedoc-plugin-include-example.git"
 	},
 	"keywords": [
 		"typedoc",
@@ -20,7 +20,7 @@
 		"Rocky Warren (https://github.com/therockstorm)"
 	],
 	"scripts": {
-		"build": "vitest run && stryker run && tsc && tsc --project vitest.tsconfig.json && tsc --project typedoc.tsconfig.json && typedoc --tsconfig ./typedoc.tsconfig.json --plugin . example/index.ts && playwright test && dprint check"
+		"build": "vitest run && stryker run && tsc && tsc --project vitest.tsconfig.json && tsc --project typedoc.tsconfig.json && typedoc --treatWarningsAsErrors --tsconfig ./typedoc.tsconfig.json --plugin . example/index.ts && playwright test && dprint check"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.41.2",
