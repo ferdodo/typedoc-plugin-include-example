@@ -20,7 +20,7 @@
 		"Rocky Warren (https://github.com/therockstorm)"
 	],
 	"scripts": {
-		"build": "vitest run && stryker run && tsc && tsc --project vitest.tsconfig.json && tsc --project typedoc.tsconfig.json && typedoc --treatWarningsAsErrors --tsconfig ./typedoc.tsconfig.json --plugin . example/index.ts && playwright test && dprint check"
+		"build": "vitest run && stryker run && tsc && tsc --project vitest.tsconfig.json && tsc --project typedoc.tsconfig.json && typedoc --treatWarningsAsErrors --tsconfig ./typedoc.tsconfig.json --plugin . demo/index.ts && playwright test && dprint check"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.41.2",

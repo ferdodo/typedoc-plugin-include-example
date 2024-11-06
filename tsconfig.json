@@ -16,7 +16,8 @@
 	],
 	"exclude": [
 		"src/*.test.ts",
-		"example/*.ts",
+		"demo/*.ts",
+		"demo/tests/*.ts",
 		"playwright.config.ts",
 		"vite.config.ts"
 	]

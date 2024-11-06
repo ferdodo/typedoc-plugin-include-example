@@ -4,10 +4,7 @@
 		"noEmit": true
 	},
 	"include": [
-		"example/*.spec.ts",
-		"example/*.fixture.ts",
-		"example/*.example.ts",
-		"src/*.test.ts",
+		"demo/tests/*.spec.ts",
 		"*.ts"
 	],
 	"exclude": [
