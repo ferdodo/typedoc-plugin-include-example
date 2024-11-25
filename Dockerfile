@@ -5,7 +5,7 @@ COPY package.json .
 COPY npm-shrinkwrap.json .
 RUN npm config set maxsockets 1
 RUN npm install
-RUN npm audit --audit-level=moderate
+RUN npm audit --audit-level=low
 RUN npm outdated typedoc
 RUN npx playwright install
 COPY . .
@@ -20,7 +20,7 @@ COPY --from=0 /typedoc-plugin-include-example/README.md .
 COPY --from=0 /typedoc-plugin-include-example/LICENSE .
 COPY --from=0 /typedoc-plugin-include-example/CONTRIBUTING.md .
 COPY --from=0 /typedoc-plugin-include-example/CODE_OF_CONDUCT.md .
-RUN npm pack
+RUN npm pack --dry-run
 ENTRYPOINT ["/bin/bash"]
 
 FROM nginx AS docs
