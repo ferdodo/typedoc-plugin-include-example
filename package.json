@@ -1,6 +1,7 @@
 {
 	"name": "typedoc-plugin-include-example",
 	"version": "1.4.1",
+	"license": "MIT",
 	"description": "Typedoc plugin to include files as example",
 	"main": "dist/index.js",
 	"repository": {
