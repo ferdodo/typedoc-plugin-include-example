@@ -33,7 +33,7 @@ jobs:
         run: |
           npx playwright install-deps
           npm install
-          npm install ../plugin/typedoc-plugin-include-example-2.0.0.tgz
+          npm install ../plugin/typedoc-plugin-include-example-2.0.1.tgz
           npm audit --audit-level=low
           npx playwright install
           npm run build
