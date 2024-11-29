@@ -1,21 +1,10 @@
 services:
-  build:
-    build:
-      context: .
-      target: build
+  plugin:
+    build: plugin
 
-  publish:
-    build:
-      context: .
-      target: publish
+  demo:
+    build: demo
     depends_on:
-      - docs
-
-  docs:
-    build:
-      context: .
-      target: docs
-    depends_on:
-      - build
+      - plugin
     ports:
-      - "1117:80"
+      - "45027:80"

@@ -1,0 +1,13 @@
+{
+	"name": "typedoc-plugin-include-example-demo",
+	"scripts": {
+		"build": "tsc && biome ci && typedoc --treatWarningsAsErrors --plugin typedoc-plugin-include-example ./index.ts && playwright test"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@playwright/test": "^1.49.0",
+		"@types/node": "^22.10.1",
+		"typedoc": "^0.27.1",
+		"typescript": "^5.7.2"
+	}
+}

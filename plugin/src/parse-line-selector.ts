@@ -29,13 +29,13 @@ export function parseLineSelector(lineSelectorString: string): number[] {
 		}
 
 		return range;
-	} else {
-		const line = Number.parseInt(lineSelectorString);
-
-		if (!Number.isFinite(line)) {
-			throw new Error("Failed to parse line number !");
-		}
-
-		return [line];
 	}
+
+	const line = Number.parseInt(lineSelectorString);
+
+	if (!Number.isFinite(line)) {
+		throw new Error("Failed to parse line number !");
+	}
+
+	return [line];
 }

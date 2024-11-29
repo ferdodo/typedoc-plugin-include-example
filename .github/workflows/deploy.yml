@@ -20,17 +20,26 @@ jobs:
         with:
           node-version: current
 
-      - name: Install and Build 🔧
+      - name: Install and Build plugin 🔧
+        run: |
+          npm install
+          npm audit --audit-level=low
+          npm outdated typedoc
+          npm run build
+          npm pack
+         working-directory: ./plugin
+
+      - name: Install and Build demo 🔧
         run: |
           npx playwright install-deps
           npm install
-          npm audit --audit-level=moderate
-          npm outdated typedoc
+          npm install ../plugin/typedoc-plugin-include-example-2.0.0.tgz
+          npm audit --audit-level=low
           npx playwright install
           npm run build
-          mv reports docs/reports
+         working-directory: ./demo
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: docs
+          folder: demo/docs

@@ -3,7 +3,7 @@ import type { Book } from "./book";
 /**
  * A class representing a library.
  *
- * @includeExample ./demo/library.example.ts:5-9
+ * @includeExample ./library.example.ts:5-9
  */
 export class Library {
 	books: Book[] = [];
@@ -14,6 +14,6 @@ export class Library {
 	}
 
 	listBooks() {
-		return this.books.map(book => book.title).join(", ");
+		return this.books.map((book) => book.title).join(", ");
 	}
 }

@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"target": "es6",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
+		"skipLibCheck": true,
+		"noEmit": true
+	}
+}
