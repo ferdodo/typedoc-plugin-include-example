@@ -23,7 +23,7 @@ function myFunction() {
 
 ### 📦 Plugin
 
-[Plugin](./package/README.md)
+[Plugin](./plugin/README.md)
 
 ### 🚀 Demo
 
