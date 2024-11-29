@@ -3,7 +3,7 @@ import type { Chapter } from "./chapter";
 /**
  * Class representing a book.
  *
- * @includeExample ./demo/book.example.ts
+ * @includeExample ./book.example.ts
  */
 export class Book {
 	title: string;
@@ -54,8 +54,11 @@ function trollFrenchify(text: string): string {
 		[/\bsmall\b/gi, "petit"],
 		[/ing\b/gi, "ant"],
 		[/\b(\w+)c\b/gi, "$1que"],
-		[/\bgreat\b/gi, "grand"]
+		[/\bgreat\b/gi, "grand"],
 	];
 
-	return replacements.reduce((acc, [pattern, replacement]) => acc.replace(pattern, replacement), text);
+	return replacements.reduce(
+		(acc, [pattern, replacement]) => acc.replace(pattern, replacement),
+		text,
+	);
 }

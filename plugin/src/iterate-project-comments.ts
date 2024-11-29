@@ -1,4 +1,4 @@
-import { Context, Reflection, Comment } from "typedoc";
+import type { Comment, Context, Reflection } from "typedoc";
 
 export function* iterateProjectComments(context: Context): Iterable<Comment> {
 	for (const key in context.project.reflections) {

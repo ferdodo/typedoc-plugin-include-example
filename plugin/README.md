@@ -20,11 +20,3 @@ function myFunction() {
     // ...
 }
 ```
-
-### 📦 Plugin
-
-[Plugin](./plugin/README.md)
-
-### 🚀 Demo
-
-[Demo](./demo/README.md)

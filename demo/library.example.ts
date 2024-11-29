@@ -1,5 +1,5 @@
-import { Library } from "./library";
 import { Book } from "./book";
+import { Library } from "./library";
 
 // this previous line should not be in the docs
 const library = new Library() // this line range

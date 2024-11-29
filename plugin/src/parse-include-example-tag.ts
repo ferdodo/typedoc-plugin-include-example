@@ -1,10 +1,8 @@
-import { IncludeExampleTag } from "./include-example-tag";
-import { parseLineSelector } from "./parse-line-selector";
+import type { IncludeExampleTag } from "./include-example-tag.js";
+import { parseLineSelector } from "./parse-line-selector.js";
 
 export function parseIncludeExampleTag(tag: string): IncludeExampleTag {
-	const splittedTag = tag.split(":")
-		[Symbol.iterator]();
-
+	const splittedTag = tag.split(":")[Symbol.iterator]();
 	const path: string | undefined = splittedTag.next().value;
 
 	if (!path) {
@@ -18,7 +16,8 @@ export function parseIncludeExampleTag(tag: string): IncludeExampleTag {
 		return includeExampleTag;
 	}
 
-	includeExampleTag.lines = lineNumbersString.split(",")
+	includeExampleTag.lines = lineNumbersString
+		.split(",")
 		.flatMap(parseLineSelector);
 
 	return includeExampleTag;

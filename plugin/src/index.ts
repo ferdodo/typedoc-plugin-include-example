@@ -1,13 +1,13 @@
-import { Converter, Application } from "typedoc";
-import { processComments } from "./process-comments";
+import { Application, Converter } from "typedoc";
+import { processComments } from "./process-comments.js";
 
 export function load(application: Application) {
 	application.on(Application.EVENT_BOOTSTRAP_END, () => {
 		application.options.setValue("blockTags", [
 			...new Set([
 				...application.options.getValue("blockTags"),
-				"@includeExample"
-			])
+				"@includeExample",
+			]),
 		]);
 	});
 
