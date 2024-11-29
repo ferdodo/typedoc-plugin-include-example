@@ -27,7 +27,7 @@ jobs:
           npm outdated typedoc
           npm run build
           npm pack
-         working-directory: ./plugin
+        working-directory: ./plugin
 
       - name: Install and Build demo 🔧
         run: |
@@ -37,7 +37,7 @@ jobs:
           npm audit --audit-level=low
           npx playwright install
           npm run build
-         working-directory: ./demo
+        working-directory: ./demo
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
