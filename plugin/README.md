@@ -5,18 +5,6 @@
 [![npm](https://img.shields.io/badge/coverage-blue)](https://ferdodo.github.io/typedoc-plugin-include-example/reports/mutation/mutation.html)
 [![npm](https://img.shields.io/badge/demo-green)](https://ferdodo.github.io/typedoc-plugin-include-example/)
 
-Include examples in your documentations.
+Include code examples in your [typedoc](https://typedoc.org/) documentations.
 
-```bash
-$ npm install --save-dev typedoc-plugin-include-example
-$ npx typedoc --plugin typedoc-plugin-include-example
-```
-
-```typescript
-/**
- * @includeExample path/to/your/example.ts:1-5,10
- */
-function myFunction() {
-    // ...
-}
-```
+See the [documentation](https://github.com/ferdodo/typedoc-plugin-include-example) for more informations.
