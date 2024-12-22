@@ -37,6 +37,7 @@ jobs:
           npm audit --audit-level=low
           npx playwright install
           npm run build
+          cp -r ../plugin/reports ./docs/reports
         working-directory: ./demo
 
       - name: Deploy 🚀
