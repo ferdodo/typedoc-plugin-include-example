@@ -11,6 +11,5 @@
 		"declaration": true,
 		"declarationDir": "dist",
 		"rootDir": "src"
-	},
-	"exclude": ["vite.config.ts"]
+	}
 }

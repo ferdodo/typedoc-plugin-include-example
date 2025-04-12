@@ -1,6 +1,6 @@
 {
 	"name": "typedoc-plugin-include-example",
-	"version": "2.0.2",
+	"version": "2.0.3",
 	"license": "MIT",
 	"type": "module",
 	"description": "Typedoc plugin to include files as example",
@@ -31,9 +31,9 @@
 		"@stryker-mutator/vitest-runner": "^8.6.0",
 		"@types/node": "^22.10.1",
 		"typescript": "^5.6.3",
-		"vitest": "^1.3.0"
+		"vitest": "^3.1.1"
 	},
 	"peerDependencies": {
-		"typedoc": "0.26.x || 0.27.x"
+		"typedoc": "0.26.x || 0.27.x || 0.28.x"
 	}
 }
