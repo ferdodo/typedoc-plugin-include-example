@@ -1,9 +1,12 @@
 import type { IncludeExampleTag } from "./include-example-tag.js";
 import { parseLineSelector } from "./parse-line-selector.js";
 
-export function parseIncludeExampleTag(tag: string): IncludeExampleTag {
+export function parseIncludeExampleTag(
+	tag: string,
+	filePath?: string,
+): IncludeExampleTag {
 	const splittedTag = tag.split(":")[Symbol.iterator]();
-	const path: string | undefined = splittedTag.next().value;
+	const path: string | undefined = splittedTag.next().value || filePath;
 
 	if (!path) {
 		throw new Error("Path not found !");

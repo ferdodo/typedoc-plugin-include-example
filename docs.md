@@ -1,17 +1,31 @@
 
-### basic usage
+# Documentation
+
+## Basic usage
 
 Include the whole file as an example.
 
 ```javascript
 /**
- * @includeExample src/greet.example.ts
+ * @includeExample
  */
 function greet() {
 }
 ```
 
-### Selecting specific lines
+## Specify file path
+
+Include a specific file as an example.
+
+```javascript
+/**
+ * @includeExample src/special-file.example.ts
+ */
+function greet() {
+}
+```
+
+## Selecting specific lines
 
 Include only the line 25 from the example.
 
@@ -23,7 +37,7 @@ function greet() {
 }
 ```
 
-### Selecting a line range
+## Selecting a line range
 
 Include line 5 to 20 from the example.
 
@@ -35,7 +49,7 @@ function greet() {
 }
 ```
 
-### Multiple line selection
+## Multiple line selection
 
 Include line 5 to 20 then line 22 then line 40 from the example.
 
