@@ -19,7 +19,7 @@ export function findExample(comment: Comment): string | null {
 	const exampleFilePath = join(dir, exampleFileName);
 
 	const includeExampleTag: IncludeExampleTag = parseIncludeExampleTag(
-		commentTag.content[0]?.text,
+		commentTag.content[0]?.text || "",
 		exampleFilePath,
 	);
 
