@@ -5,7 +5,6 @@ WORKDIR /typedoc-plugin-include-example/demo
 RUN npx playwright install-deps
 RUN npm config set maxsockets 1
 COPY package.json .
-COPY npm-shrinkwrap.json .
 RUN npm install
 RUN npx playwright install
 RUN npm audit --audit-level=low
