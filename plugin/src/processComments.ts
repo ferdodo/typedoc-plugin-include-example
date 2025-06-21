@@ -1,7 +1,7 @@
 import type { Context } from "typedoc";
-import { findExample } from "./find-example.js";
-import { includeExample } from "./include-example.js";
-import { iterateProjectComments } from "./iterate-project-comments.js";
+import { findExample } from "./findExample.js";
+import { includeExample } from "./includeExample.js";
+import { iterateProjectComments } from "./iterateProjectComments.js";
 
 export function processComments(context: Context) {
 	for (const comment of iterateProjectComments(context)) {

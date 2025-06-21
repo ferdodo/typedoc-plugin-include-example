@@ -1,5 +1,5 @@
-import { Book } from "./book";
-import { Chapter } from "./chapter";
+import { Book } from "./Book";
+import { Chapter } from "./Chapter";
 
 // this previous line should not be in the docs
 const chapter1 = new Chapter(); // this line range

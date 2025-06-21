@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { parseLineSelector } from "./parse-line-selector.js";
+import { parseLineSelector } from "./parseLineSelector.js";
 
 test("Should parse a line", () => {
 	const result = parseLineSelector("15");

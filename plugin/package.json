@@ -23,13 +23,14 @@
 		"Gerrit Birkeland (https://github.com/Gerrit0)"
 	],
 	"scripts": {
-		"build": "tsc --noEmit && vitest run && biome ci && stryker run && tsc"
+		"build": "tsc --noEmit && vitest run && biome ci && exportcase check src && stryker run && tsc"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@stryker-mutator/core": "^8.6.0",
 		"@stryker-mutator/vitest-runner": "^8.6.0",
 		"@types/node": "^22.10.1",
+		"exportcase": "^0.11.0",
 		"typescript": "^5.6.3",
 		"vitest": "^3.1.1"
 	},

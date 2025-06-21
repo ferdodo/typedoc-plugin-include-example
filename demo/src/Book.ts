@@ -1,9 +1,9 @@
-import type { Chapter } from "./chapter";
+import type { Chapter } from "./Chapter";
 
 /**
  * Class representing a book.
  *
- * @includeExample ./book.example.ts
+ * @includeExample ./src/Book.example.ts
  */
 export class Book {
 	title: string;

@@ -1,4 +1,4 @@
-import { Book } from "./book";
+import { Book } from "./Book";
 
 const book = new Book("The Lord of the Rings");
 const frenchTitle = book.translateTitle();

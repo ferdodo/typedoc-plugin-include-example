@@ -1,9 +1,9 @@
-import type { Book } from "./book";
+import type { Book } from "./Book";
 
 /**
  * A class representing a library.
  *
- * @includeExample ./library.example.ts:5-9
+ * @includeExample ./src/Library.example.ts:5-9
  */
 export class Library {
 	books: Book[] = [];

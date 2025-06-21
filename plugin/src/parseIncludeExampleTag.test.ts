@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { parseIncludeExampleTag } from "./parse-include-example-tag.js";
+import { parseIncludeExampleTag } from "./parseIncludeExampleTag.js";
 
 test("it should parse include example tag", () => {
 	const result = parseIncludeExampleTag("path/to/file");

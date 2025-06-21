@@ -1,9 +1,9 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join, parse } from "node:path";
 import type { Comment } from "typedoc";
-import { applyLineSelection } from "./apply-line-selection.js";
-import type { IncludeExampleTag } from "./include-example-tag.js";
-import { parseIncludeExampleTag } from "./parse-include-example-tag.js";
+import type { IncludeExampleTag } from "./IncludeExampleTag.js";
+import { applyLineSelection } from "./applyLineSelection.js";
+import { parseIncludeExampleTag } from "./parseIncludeExampleTag.js";
 
 export function findExample(comment: Comment): string | null {
 	const commentTag = comment.blockTags.find(

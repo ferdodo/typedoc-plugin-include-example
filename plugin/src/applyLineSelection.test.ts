@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { applyLineSelection } from "./apply-line-selection.js";
+import { applyLineSelection } from "./applyLineSelection.js";
 
 test("It should select lines from file", () => {
 	const file = "hello\nthis\nis\na\nmultiline\nfile";

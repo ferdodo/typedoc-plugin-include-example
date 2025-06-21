@@ -1,4 +1,4 @@
-import type { IncludeExampleTag } from "./include-example-tag.js";
+import type { IncludeExampleTag } from "./IncludeExampleTag.js";
 
 export function applyLineSelection(
 	content: string,

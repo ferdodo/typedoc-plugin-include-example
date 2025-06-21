@@ -1,9 +1,9 @@
-import type { Book } from "./book";
+import type { Book } from "./Book";
 
 /**
  * A class representing an author.
  *
- * @includeExample ./author.example.ts:7
+ * @includeExample ./src/Author.example.ts:7
  */
 export class Author {
 	books: Book[] = [];

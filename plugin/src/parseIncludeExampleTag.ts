@@ -1,5 +1,5 @@
-import type { IncludeExampleTag } from "./include-example-tag.js";
-import { parseLineSelector } from "./parse-line-selector.js";
+import type { IncludeExampleTag } from "./IncludeExampleTag.js";
+import { parseLineSelector } from "./parseLineSelector.js";
 
 export function parseIncludeExampleTag(
 	tag: string,

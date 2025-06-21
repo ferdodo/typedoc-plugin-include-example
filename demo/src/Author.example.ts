@@ -1,5 +1,5 @@
-import { Author } from "./author";
-import { Book } from "./book";
+import { Author } from "./Author";
+import { Book } from "./Book";
 
 const author = new Author();
 
