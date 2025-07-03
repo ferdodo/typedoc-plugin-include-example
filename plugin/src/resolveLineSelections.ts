@@ -2,113 +2,164 @@ import type { LineSelection } from "./LineSelection.js";
 import type { ParsedLineSelector } from "./ParsedLineSelector.js";
 
 export function resolveLineSelections(
-	parsed: ParsedLineSelector,
-	totalLines: number,
+  parsed: ParsedLineSelector,
+  totalLines: number
 ): number[] {
-	if (totalLines <= 0) {
-		return [];
-	}
+  if (totalLines <= 0) {
+    return [];
+  }
 
-	const includedLines = new Set<number>();
-	const excludedLines = new Set<number>();
+  const includedLines = new Set<number>();
+  const excludedLines = new Set<number>();
 
-	// Process all selections
-	for (const selection of parsed.selections) {
-		const lines = resolveSelection(selection, totalLines);
+  // Process all selections
+  for (const selection of parsed.selections) {
+    const lines = resolveSelection(selection, totalLines);
+    addLinesToSet(
+      lines,
+      selection.type === "inclusion" ? includedLines : excludedLines
+    );
+  }
 
-		if (selection.type === "inclusion") {
-			for (const line of lines) {
-				includedLines.add(line);
-			}
-		} else {
-			for (const line of lines) {
-				excludedLines.add(line);
-			}
-		}
-	}
+  // If no inclusions specified, include all lines
+  if (shouldIncludeAllLines(parsed)) {
+    addAllLinesToSet(includedLines, totalLines);
+  }
 
-	// If no inclusions specified, include all lines
-	if (
-		parsed.selections.length === 0 ||
-		parsed.selections.every((s) => s.type === "exclusion")
-	) {
-		for (let i = 1; i <= totalLines; i++) {
-			includedLines.add(i);
-		}
-	}
+  // Apply exclusions
+  applyExclusions(includedLines, excludedLines);
 
-	// Apply exclusions
-	for (const excludedLine of excludedLines) {
-		includedLines.delete(excludedLine);
-	}
+  // Return sorted array
+  return Array.from(includedLines).sort((a, b) => a - b);
+}
 
-	// Return sorted array
-	return Array.from(includedLines).sort((a, b) => a - b);
+function addLinesToSet(lines: number[], targetSet: Set<number>): void {
+  for (const line of lines) {
+    targetSet.add(line);
+  }
+}
+
+function shouldIncludeAllLines(parsed: ParsedLineSelector): boolean {
+  return (
+    parsed.selections.length === 0 ||
+    parsed.selections.every((s) => s.type === "exclusion")
+  );
+}
+
+function addAllLinesToSet(
+  includedLines: Set<number>,
+  totalLines: number
+): void {
+  for (let i = 1; i <= totalLines; i++) {
+    includedLines.add(i);
+  }
+}
+
+function applyExclusions(
+  includedLines: Set<number>,
+  excludedLines: Set<number>
+): void {
+  for (const excludedLine of excludedLines) {
+    includedLines.delete(excludedLine);
+  }
 }
 
 function resolveSelection(
-	selection: LineSelection,
-	totalLines: number,
+  selection: LineSelection,
+  totalLines: number
 ): number[] {
-	// Handle single line
-	if (selection.single !== undefined) {
-		const line = selection.isNegative
-			? totalLines - selection.single + 1
-			: selection.single;
+  // Handle single line
+  if (selection.single !== undefined) {
+    return resolveSingleLine(selection, totalLines);
+  }
 
-		if (line < 1 || line > totalLines) {
-			throw new Error(
-				`Line ${
-					selection.isNegative ? -selection.single : selection.single
-				} is out of range (file has ${totalLines} lines)`,
-			);
-		}
+  // Handle range
+  return resolveRange(selection, totalLines);
+}
 
-		return [line];
-	}
+function resolveSingleLine(
+  selection: LineSelection,
+  totalLines: number
+): number[] {
+  const singleValue = selection.single;
+  if (singleValue === undefined) {
+    throw new Error("Single line value is undefined");
+  }
 
-	// Handle range
-	let start = selection.start;
-	let end = selection.end;
+  const line = selection.isNegative
+    ? totalLines - singleValue + 1
+    : singleValue;
 
-	// Resolve negative indexing
-	if (selection.isNegative) {
-		if (start !== undefined) {
-			start = totalLines - start + 1;
-		}
-		if (end !== undefined) {
-			end = totalLines - end + 1;
-		}
-		// For negative ranges, swap start and end if needed
-		if (start !== undefined && end !== undefined && start > end) {
-			[start, end] = [end, start];
-		}
-	}
+  if (line < 1 || line > totalLines) {
+    throw new Error(
+      `Line ${
+        selection.isNegative ? -singleValue : singleValue
+      } is out of range (file has ${totalLines} lines)`
+    );
+  }
 
-	// Default to full range if not specified
-	if (start === undefined) start = 1;
-	if (end === undefined) end = totalLines;
+  return [line];
+}
 
-	// Check for completely out-of-bounds ranges
-	if (start > totalLines) {
-		throw new Error(
-			`Line ${start} is out of range (file has ${totalLines} lines)`,
-		);
-	}
+function resolveRange(selection: LineSelection, totalLines: number): number[] {
+  let start = selection.start;
+  let end = selection.end;
 
-	// Validate bounds (clamp to valid range)
-	start = Math.max(1, Math.min(start, totalLines));
-	end = Math.max(1, Math.min(end, totalLines));
+  // Resolve negative indexing
+  if (selection.isNegative) {
+    ({ start, end } = resolveNegativeRange(start, end, totalLines));
+  }
 
-	if (start > end) {
-		return [];
-	}
+  // Default to full range if not specified
+  if (start === undefined) start = 1;
+  if (end === undefined) end = totalLines;
 
-	// Generate range
-	const result: number[] = [];
-	for (let i = start; i <= end; i++) {
-		result.push(i);
-	}
+  // Validate and clamp bounds
+  validateRangeBounds(start, totalLines);
+  start = Math.max(1, Math.min(start, totalLines));
+  end = Math.max(1, Math.min(end, totalLines));
 
-	return result;
+  if (start > end) {
+    return [];
+  }
+
+  // Generate range
+  return generateRange(start, end);
+}
+
+function resolveNegativeRange(
+  start: number | undefined,
+  end: number | undefined,
+  totalLines: number
+): { start: number | undefined; end: number | undefined } {
+  let newStart = start;
+  let newEnd = end;
+
+  if (newStart !== undefined) {
+    newStart = totalLines - newStart + 1;
+  }
+  if (newEnd !== undefined) {
+    newEnd = totalLines - newEnd + 1;
+  }
+  // For negative ranges, swap start and end if needed
+  if (newStart !== undefined && newEnd !== undefined && newStart > newEnd) {
+    [newStart, newEnd] = [newEnd, newStart];
+  }
+  return { start: newStart, end: newEnd };
+}
+
+function validateRangeBounds(start: number, totalLines: number): void {
+  if (start > totalLines) {
+    throw new Error(
+      `Line ${start} is out of range (file has ${totalLines} lines)`
+    );
+  }
+}
+
+function generateRange(start: number, end: number): number[] {
+  const result: number[] = [];
+  for (let i = start; i <= end; i++) {
+    result.push(i);
+  }
+  return result;
 }
