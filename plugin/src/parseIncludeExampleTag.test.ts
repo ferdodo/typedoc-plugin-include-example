@@ -22,13 +22,13 @@ test("it should throw on empty path", () => {
 
 test("it should throw migration error for old colon syntax", () => {
 	expect(() => parseIncludeExampleTag("path/to/file:2-4")).toThrowError(
-		/BREAKING CHANGE: The colon syntax 'path\/to\/file:2-4' is no longer supported/,
+		/BREAKING CHANGE: The colon syntax 'path\/to\/file:2-4' is no longer supported in v3\.0\.0\+/,
 	);
 });
 
 test("it should throw migration error for old colon syntax with multiple selectors", () => {
 	expect(() => parseIncludeExampleTag("path/to/file:2-4,15")).toThrowError(
-		/BREAKING CHANGE: The colon syntax 'path\/to\/file:2-4,15' is no longer supported/,
+		/BREAKING CHANGE: The colon syntax 'path\/to\/file:2-4,15' is no longer supported in v3\.0\.0\+/,
 	);
 });
 

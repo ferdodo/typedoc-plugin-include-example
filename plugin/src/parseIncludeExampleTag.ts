@@ -39,7 +39,7 @@ export function parseIncludeExampleTag(
 		if (potentialSelector.trim() && /^[\d\-,\s]+$/.test(potentialSelector)) {
 			// This looks like old colon syntax with line selectors
 			throw new Error(
-				`BREAKING CHANGE: The colon syntax '${tag}' is no longer supported. Please migrate to the new bracket syntax: '${potentialPath}[${potentialSelector}]'. See documentation for the new Python-like slicing syntax.`,
+				`BREAKING CHANGE: The colon syntax '${tag}' is no longer supported in v3.0.0+. Please migrate to the new bracket syntax: '${potentialPath}[${potentialSelector}]'. See documentation for the new Python-like slicing syntax.`,
 			);
 		}
 	}

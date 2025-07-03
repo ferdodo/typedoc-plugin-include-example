@@ -6,14 +6,14 @@ import type { Book } from "./Book";
  * @includeExample ./src/Library.example.ts[5-9]
  */
 export class Library {
-  books: Book[] = [];
+	books: Book[] = [];
 
-  addBook(book: Book): Library {
-    this.books.push(book);
-    return this;
-  }
+	addBook(book: Book): Library {
+		this.books.push(book);
+		return this;
+	}
 
-  listBooks() {
-    return this.books.map((book) => book.title).join(", ");
-  }
+	listBooks() {
+		return this.books.map((book) => book.title).join(", ");
+	}
 }

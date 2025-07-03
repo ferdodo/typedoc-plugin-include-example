@@ -6,10 +6,10 @@ import type { Book } from "./Book";
  * @includeExample ./src/Author.example.ts[7]
  */
 export class Author {
-  books: Book[] = [];
+	books: Book[] = [];
 
-  addBook(book: Book): Author {
-    this.books.push(book);
-    return this;
-  }
+	addBook(book: Book): Author {
+		this.books.push(book);
+		return this;
+	}
 }
