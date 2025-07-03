@@ -12,19 +12,41 @@ We offer two methods to set up your development environment:
 2. Run the following command in the project root:
 
 ```
-docker compose up -d --build 
+docker compose up -d --build
 ```
- 
+
 Run this command everytime you need to verify your modifications.
- 
+
+#### Apple Silicon (ARM64) Compatibility
+
+If you're using an Apple Silicon Mac and encounter Docker build errors, you have several options:
+
+**Option A: Local Override File (Recommended)**
+Create a `docker-compose.override.yml` file in the project root:
+
+```yaml
+services:
+  plugin:
+    platform: linux/amd64
+  demo:
+    platform: linux/amd64
+```
+
+**Option B: Environment Variable**
+
+```bash
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+docker compose up -d --build
+```
+
 ### Option 2: Manual Setup
- 
+
 If you prefer not to use Docker, follow these steps:
- 
+
 1. Install project dependencies:
 
 ```
-npm install 
+npm install
 ```
 
 2. Set up Playwright:
@@ -37,7 +59,7 @@ npx playwright install
 3. Build the project:
 
 ```
-npm run build 
+npm run build
 ```
 
 ## Code Coverage and Testing

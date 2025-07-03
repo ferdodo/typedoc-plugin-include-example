@@ -7,7 +7,7 @@
 [![npm](https://img.shields.io/badge/coverage-blue)](https://ferdodo.github.io/typedoc-plugin-include-example/reports/mutation/mutation.html)
 [![npm](https://img.shields.io/badge/demo-green)](https://ferdodo.github.io/typedoc-plugin-include-example/)
 
-Include code examples in your [typedoc](https://typedoc.org/) documentations with powerful Python-like slicing syntax.
+Include code examples in your [typedoc](https://typedoc.org/) documentations with powerful bracket syntax for line selection.
 
 ## Installation
 
@@ -47,58 +47,22 @@ Then generate your documentation using typedoc using this plugin.
 $ npx typedoc --plugin typedoc-plugin-include-example
 ```
 
-## Line Selection Syntax
+## Line Selection
 
-### Basic Usage
-
-```typescript
-/**
- * @includeExample greet.example.ts        // Include entire file
- * @includeExample greet.example.ts[5]     // Include line 5 only
- * @includeExample greet.example.ts[2:8]   // Include lines 2-8
- */
-```
-
-### Advanced Python-like Slicing
+Control which lines to include with bracket syntax:
 
 ```typescript
 /**
- * @includeExample greet.example.ts[5:]     // From line 5 to end
- * @includeExample greet.example.ts[:10]    // From start to line 10
- * @includeExample greet.example.ts[-5:]    // Last 5 lines
- * @includeExample greet.example.ts[:-3]    // All except last 3 lines
- * @includeExample greet.example.ts[-5:-2]  // Lines -5 to -2 (negative indexing)
+ * @includeExample greet.example.ts                 // Include entire file
+ * @includeExample greet.example.ts[5]              // Include line 5 only
+ * @includeExample greet.example.ts[2:8]            // Include lines 2-8
+ * @includeExample greet.example.ts[2:5,10,15:20]   // Multiple selections
  */
-```
-
-### Multiple Selections & Exclusions
-
-```typescript
-/**
- * @includeExample greet.example.ts[2:5,10,15:20]     // Lines 2-5, 10, and 15-20
- * @includeExample greet.example.ts[1:20,!8:12]       // Lines 1-20 except 8-12
- * @includeExample greet.example.ts[:10,!3,!7]        // Lines 1-10 except 3 and 7
- */
-```
-
-## 🚨 Breaking Changes in v3.0.0
-
-The old colon syntax is no longer supported. Please migrate:
-
-```diff
-- @includeExample path/to/file:15
-+ @includeExample path/to/file[15]
-
-- @includeExample path/to/file:2-4
-+ @includeExample path/to/file[2:4]
-
-- @includeExample path/to/file:2-4,15
-+ @includeExample path/to/file[2:4,15]
 ```
 
 ## Features
 
-See the [Documentation](./docs.md) for full usage.
+See the [Documentation](./docs.md) for full usage including advanced bracket syntax, exclusions, negative indexing, and troubleshooting.
 
 ## Links
 
