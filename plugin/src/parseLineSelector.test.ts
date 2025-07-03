@@ -29,6 +29,12 @@ test("Should parse a range of lines starting with 1 (old syntax)", () => {
 	expect(result).toEqual([1, 2, 3, 4]);
 });
 
+test("Should parse multiple line selectors (old syntax)", () => {
+	const result = parseLineSelector("2-4,15");
+	expect(Array.isArray(result)).toBe(true);
+	expect(result).toEqual([2, 3, 4, 15]);
+});
+
 test("Should throw error on missing range start (old syntax)", () => {
 	expect(() => parseLineSelector("x-4")).toThrowError(
 		"Failed to parse range start !",
@@ -77,7 +83,7 @@ test("Should throw error on bad single line (old syntax)", () => {
 	);
 });
 
-// ============= NEW PYTHON-LIKE SYNTAX TESTS =============
+// ============= NEW BRACKET SYNTAX TESTS =============
 
 // Helper function to get ParsedLineSelector from result
 function getParsedSelector(
@@ -272,6 +278,62 @@ test("Should throw error on invalid positive range", () => {
 	);
 });
 
+// ============= ADDITIONAL EDGE CASE TESTS =============
+
+test("Should parse complex mixed syntax", () => {
+	const result = getParsedSelector(parseLineSelector("1:5,10,15:,!3,!12:14"));
+	expect(result.selections).toHaveLength(5);
+	expect(result.hasExclusions).toBe(true);
+	expect(result.hasNegativeIndexing).toBe(false);
+});
+
+test("Should parse negative exclusions", () => {
+	const result = getParsedSelector(parseLineSelector(":-5,!-3"));
+	expect(result.selections).toHaveLength(2);
+	expect(result.selections[0]).toEqual({
+		type: "inclusion",
+		start: undefined,
+		end: 5,
+		isNegative: true,
+	});
+	expect(result.selections[1]).toEqual({
+		type: "exclusion",
+		single: 3,
+		isNegative: true,
+	});
+	expect(result.hasNegativeIndexing).toBe(true);
+	expect(result.hasExclusions).toBe(true);
+});
+
+test("Should handle whitespace in selectors", () => {
+	const result = getParsedSelector(parseLineSelector(" 2:5 , 10 , !7 "));
+	expect(result.selections).toHaveLength(3);
+	expect(result.selections[0].start).toBe(2);
+	expect(result.selections[0].end).toBe(5);
+	expect(result.selections[1].single).toBe(10);
+	expect(result.selections[2].single).toBe(7);
+	expect(result.selections[2].type).toBe("exclusion");
+});
+
+test("Should parse only exclusions (implicit full range)", () => {
+	const result = getParsedSelector(parseLineSelector("!3,!7:9"));
+	expect(result.selections).toHaveLength(2);
+	expect(result.selections[0].type).toBe("exclusion");
+	expect(result.selections[1].type).toBe("exclusion");
+	expect(result.hasExclusions).toBe(true);
+});
+
+test("Should handle single colon (empty range)", () => {
+	const result = getParsedSelector(parseLineSelector(":"));
+	expect(result.selections).toHaveLength(0);
+});
+
+test("Should handle bracket-like patterns in new syntax", () => {
+	const result = getParsedSelector(parseLineSelector("1:3,5:7"));
+	expect(result.selections).toHaveLength(2);
+	// Should not be confused with old bracket syntax since we're using colon
+});
+
 // ============= LINE RESOLUTION TESTS =============
 
 test("Should resolve single positive line", () => {
@@ -352,4 +414,50 @@ test("Should resolve with bounds clamping for ranges", () => {
 	const parsed = getParsedSelector(parseLineSelector("8:15"));
 	const result = resolveLineSelections(parsed, 10);
 	expect(result).toEqual([8, 9, 10]); // Clamped to file bounds
+});
+
+// ============= ADDITIONAL RESOLUTION EDGE CASES =============
+
+test("Should resolve negative open-ended range to end", () => {
+	const parsed = getParsedSelector(parseLineSelector(":-3"));
+	const result = resolveLineSelections(parsed, 10);
+	expect(result).toEqual([1, 2, 3, 4, 5, 6, 7, 8]); // All except last 2 lines
+});
+
+test("Should resolve mixed positive and negative ranges", () => {
+	const parsed = getParsedSelector(parseLineSelector("1:3,-3:-1"));
+	const result = resolveLineSelections(parsed, 10);
+	expect(result).toEqual([1, 2, 3, 8, 9, 10]); // First 3 and last 3
+});
+
+test("Should resolve complex exclusion patterns", () => {
+	const parsed = getParsedSelector(parseLineSelector("1:20,!5:7,!15,!-2"));
+	const result = resolveLineSelections(parsed, 20);
+	expect(result).toEqual([
+		1, 2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 20,
+	]); // Exclude 5-7, 15, and 19 (second to last)
+});
+
+test("Should handle single line file with negative indexing", () => {
+	const parsed = getParsedSelector(parseLineSelector("-1"));
+	const result = resolveLineSelections(parsed, 1);
+	expect(result).toEqual([1]); // Only line in file
+});
+
+test("Should handle overlapping ranges and exclusions", () => {
+	const parsed = getParsedSelector(parseLineSelector("1:10,5:15,!8:12"));
+	const result = resolveLineSelections(parsed, 20);
+	expect(result).toEqual([1, 2, 3, 4, 5, 6, 7, 13, 14, 15]); // Combined ranges minus exclusions
+});
+
+test("Should resolve empty result when all lines excluded", () => {
+	const parsed = getParsedSelector(parseLineSelector("1:5,!1:5"));
+	const result = resolveLineSelections(parsed, 10);
+	expect(result).toEqual([]); // All included lines are excluded
+});
+
+test("Should handle negative exclusions properly", () => {
+	const parsed = getParsedSelector(parseLineSelector("-5:,!-2"));
+	const result = resolveLineSelections(parsed, 10);
+	expect(result).toEqual([6, 7, 8, 10]); // Last 5 lines except second to last
 });

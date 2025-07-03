@@ -17,7 +17,7 @@ export function parseLineSelector(
 		return parseOldSyntax(trimmed);
 	}
 
-	// Parse new Python-like syntax
+	// Parse new bracket syntax
 	return parseNewSlicingSyntax(trimmed);
 }
 
