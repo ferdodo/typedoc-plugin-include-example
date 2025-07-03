@@ -6,14 +6,16 @@ test("it should parse include example tag", () => {
 	expect(result).toEqual({ path: "path/to/file" });
 });
 
-test("it should parse include example tag with a line selector", () => {
-	const result = parseIncludeExampleTag("path/to/file[2-4]");
-	expect(result).toEqual({ path: "path/to/file", lines: [2, 3, 4] });
+test("it should throw error for old dash syntax in brackets", () => {
+	expect(() => parseIncludeExampleTag("path/to/file[2-4]")).toThrowError(
+		/BREAKING CHANGE: The dash syntax '2-4' inside brackets is no longer supported in v3\.0\.0\+/,
+	);
 });
 
-test("it should parse include example tag with multiple line selectors", () => {
-	const result = parseIncludeExampleTag("path/to/file[2-4,15]");
-	expect(result).toEqual({ path: "path/to/file", lines: [2, 3, 4, 15] });
+test("it should throw error for old dash syntax with multiple selectors", () => {
+	expect(() => parseIncludeExampleTag("path/to/file[2-4,15]")).toThrowError(
+		/BREAKING CHANGE: The dash syntax '2-4,15' inside brackets is no longer supported in v3\.0\.0\+/,
+	);
 });
 
 test("it should throw on empty path", () => {
@@ -37,7 +39,7 @@ test("it should allow colons in file paths without selectors", () => {
 	expect(result).toEqual({ path: "path:with:colons/file.ts" });
 });
 
-// ============= ADDITIONAL BRACKET SYNTAX TESTS =============
+// ============= BRACKET SYNTAX TESTS =============
 
 test("it should handle empty brackets (select all lines)", () => {
 	const result = parseIncludeExampleTag("path/to/file[]");
@@ -56,7 +58,7 @@ test("it should handle colon-only brackets (select all lines)", () => {
 	});
 });
 
-test("it should parse bracket syntax in brackets", () => {
+test("it should parse bracket syntax with colon ranges", () => {
 	const result = parseIncludeExampleTag("path/to/file[2:8]");
 	expect(result.path).toBe("path/to/file");
 	expect(result.parsedSelector).toBeDefined();
@@ -65,6 +67,16 @@ test("it should parse bracket syntax in brackets", () => {
 		type: "inclusion",
 		start: 2,
 		end: 8,
+		isNegative: false,
+	});
+});
+
+test("it should parse single line selection", () => {
+	const result = parseIncludeExampleTag("path/to/file[10]");
+	expect(result.path).toBe("path/to/file");
+	expect(result.parsedSelector?.selections[0]).toEqual({
+		type: "inclusion",
+		single: 10,
 		isNegative: false,
 	});
 });
@@ -94,10 +106,14 @@ test("it should handle file paths with brackets in the path itself", () => {
 	expect(result).toEqual({ path: "path/with[brackets]/file.ts" });
 });
 
-test("it should handle Windows-style paths with brackets (single number = old syntax)", () => {
+test("it should handle Windows-style paths with brackets", () => {
 	const result = parseIncludeExampleTag("C:\\path\\to\\file.ts[10]");
 	expect(result.path).toBe("C:\\path\\to\\file.ts");
-	expect(result.lines).toEqual([10]);
+	expect(result.parsedSelector?.selections[0]).toEqual({
+		type: "inclusion",
+		single: 10,
+		isNegative: false,
+	});
 });
 
 test("it should handle URLs with brackets", () => {
@@ -144,8 +160,35 @@ test("it should handle relative paths with brackets", () => {
 	});
 });
 
-test("it should handle single character file names (single number = old syntax)", () => {
+test("it should handle single character file names", () => {
 	const result = parseIncludeExampleTag("a[1]");
 	expect(result.path).toBe("a");
-	expect(result.lines).toEqual([1]);
+	expect(result.parsedSelector?.selections[0]).toEqual({
+		type: "inclusion",
+		single: 1,
+		isNegative: false,
+	});
+});
+
+test("it should handle multiple selections with colon syntax", () => {
+	const result = parseIncludeExampleTag("path/to/file[2:4,10,15:20]");
+	expect(result.path).toBe("path/to/file");
+	expect(result.parsedSelector?.selections).toHaveLength(3);
+	expect(result.parsedSelector?.selections[0]).toEqual({
+		type: "inclusion",
+		start: 2,
+		end: 4,
+		isNegative: false,
+	});
+	expect(result.parsedSelector?.selections[1]).toEqual({
+		type: "inclusion",
+		single: 10,
+		isNegative: false,
+	});
+	expect(result.parsedSelector?.selections[2]).toEqual({
+		type: "inclusion",
+		start: 15,
+		end: 20,
+		isNegative: false,
+	});
 });

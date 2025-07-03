@@ -16,14 +16,8 @@ export function parseIncludeExampleTag(
 		// Parse the selector string using new bracket syntax
 		const parsed = parseLineSelector(selectorString);
 
-		// Handle the two possible return types
-		if (Array.isArray(parsed)) {
-			// Old dash syntax returned number[] directly
-			includeExampleTag.lines = parsed;
-		} else {
-			// New syntax returned ParsedLineSelector - store for later resolution
-			includeExampleTag.parsedSelector = parsed;
-		}
+		// Store the parsed selector for later resolution
+		includeExampleTag.parsedSelector = parsed;
 
 		return includeExampleTag;
 	}
@@ -39,7 +33,10 @@ export function parseIncludeExampleTag(
 		if (potentialSelector.trim() && /^[\d\-,\s]+$/.test(potentialSelector)) {
 			// This looks like old colon syntax with line selectors
 			throw new Error(
-				`BREAKING CHANGE: The colon syntax '${tag}' is no longer supported in v3.0.0+. Please migrate to the new bracket syntax: '${potentialPath}[${potentialSelector}]'. See documentation for the new bracket syntax.`,
+				`BREAKING CHANGE: The colon syntax '${tag}' is no longer supported in v3.0.0+. Please migrate to the new bracket syntax: '${potentialPath}[${potentialSelector.replace(
+					/-/g,
+					":",
+				)}]'. See documentation for the new bracket syntax.`,
 			);
 		}
 	}

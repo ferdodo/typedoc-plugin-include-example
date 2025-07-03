@@ -3,103 +3,54 @@ import type { ParsedLineSelector } from "./ParsedLineSelector.js";
 
 export function parseLineSelector(
 	lineSelectorString: string,
-): number[] | ParsedLineSelector {
+): ParsedLineSelector {
 	// Handle empty or whitespace-only selectors
 	const trimmed = lineSelectorString.trim();
 	if (!trimmed || trimmed === ":") {
 		return { selections: [], hasNegativeIndexing: false, hasExclusions: false };
 	}
 
-	// Check if this is old syntax (backwards compatibility)
-	// Old syntax: single positive numbers, dash ranges, or comma-separated combinations
-	// But exclude single negative numbers and anything with colons or exclamations
-	if (isOldSyntax(trimmed)) {
-		return parseOldSyntax(trimmed);
+	// v3.0.0: Only support new bracket syntax with colons
+	// Old dash syntax is no longer supported
+	if (containsOldDashSyntax(trimmed)) {
+		throw new Error(
+			`BREAKING CHANGE: The dash syntax '${trimmed}' inside brackets is no longer supported in v3.0.0+. Please use colon syntax instead. Examples: '2-4' → '2:4', '5-7,11' → '5:7,11'. See documentation for the new bracket syntax.`,
+		);
 	}
 
 	// Parse new bracket syntax
 	return parseNewSlicingSyntax(trimmed);
 }
 
-function isOldSyntax(selector: string): boolean {
-	// Single positive number
-	if (/^\d+$/.test(selector)) {
-		return true;
-	}
-
-	// Contains new syntax features - definitely not old syntax
-	if (selector.includes(":") || selector.includes("!")) {
-		return false;
-	}
-
-	// Single negative number - definitely new syntax
-	if (/^-\d+$/.test(selector)) {
-		return false;
-	}
-
-	// Check if all comma-separated parts are old-style (numbers or dash ranges)
+function containsOldDashSyntax(selector: string): boolean {
+	// Split by comma to check each part
 	const parts = selector.split(",").map((p) => p.trim());
-	return parts.every((part) => {
-		// Single positive number
-		if (/^\d+$/.test(part)) {
+
+	return parts.some((part) => {
+		// Skip exclusions for this check
+		const cleanPart = part.startsWith("!") ? part.slice(1) : part;
+
+		// Check for old dash range patterns like "2-4" but not negative numbers
+		// Old dash syntax: number-number (like "2-4", "10-15")
+		// NOT old syntax: "-5" (negative number), "-5:" (negative with colon), "5:-3" (contains colon)
+
+		// If it contains a colon, it's new syntax (even with negative numbers)
+		if (cleanPart.includes(":")) {
+			return false;
+		}
+
+		// Check for dash patterns that are NOT single negative numbers
+		if (cleanPart.includes("-")) {
+			// Single negative number is new syntax
+			if (/^-\d+$/.test(cleanPart)) {
+				return false;
+			}
+			// Dash range like "2-4" is old syntax
 			return true;
 		}
-		// Dash range (valid or malformed) - anything with dash that's not a single negative number
-		if (part.includes("-") && !/^-\d+$/.test(part)) {
-			return true;
-		}
+
 		return false;
 	});
-}
-
-function parseOldSyntax(selector: string): number[] {
-	const result: number[] = [];
-
-	// Split by comma to handle multiple selectors
-	const parts = selector.split(",").map((p) => p.trim());
-
-	for (const part of parts) {
-		if (!part) continue;
-
-		// Handle single line number
-		if (!part.includes("-")) {
-			const line = Number.parseInt(part);
-			if (!Number.isFinite(line)) {
-				throw new Error("Failed to parse line number !");
-			}
-			result.push(line);
-			continue;
-		}
-
-		// Handle dash range
-		const lineRange: string[] = part.split("-");
-		const startString: string | undefined = lineRange[0];
-		const endString: string | undefined = lineRange[1];
-		const start: number = Number.parseInt(startString);
-		const end: number = Number.parseInt(endString);
-
-		if (!Number.isFinite(start)) {
-			throw new Error("Failed to parse range start !");
-		}
-
-		if (!Number.isFinite(end)) {
-			throw new Error("Failed to parse range end !");
-		}
-
-		if (start < 1) {
-			throw new Error("Range start not positive !");
-		}
-
-		if (start >= end) {
-			throw new Error("Range start is greater or equal to range end !");
-		}
-
-		for (let i = start; i <= end; i++) {
-			result.push(i);
-		}
-	}
-
-	return result;
 }
 
 function parseNewSlicingSyntax(selector: string): ParsedLineSelector {
