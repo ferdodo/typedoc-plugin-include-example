@@ -20,7 +20,8 @@
 	"contributors": [
 		"Jeremy Cherer (https://github.com/JavaLavaMT)",
 		"Rocky Warren (https://github.com/therockstorm)",
-		"Gerrit Birkeland (https://github.com/Gerrit0)"
+		"Gerrit Birkeland (https://github.com/Gerrit0)",
+		"Sanjeev Penupala (https://github.com/spenpal)"
 	],
 	"scripts": {
 		"build": "tsc --noEmit && vitest run && biome ci && exportcase check src && stryker run && tsc",
