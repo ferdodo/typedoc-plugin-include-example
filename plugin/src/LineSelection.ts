@@ -1,7 +1,3 @@
-export interface LineSelection {
-	type: "inclusion" | "exclusion";
-	start?: number;
-	end?: number;
-	single?: number;
-	isNegative?: boolean;
-}
+export type LineSelection =
+	| { type: "single"; isExclusion: boolean; line: number }
+	| { type: "range"; isExclusion: boolean; start?: number; end?: number };

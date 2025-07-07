@@ -5,12 +5,23 @@ export function parseIncludeExampleTag(
 	tag: string,
 	filePath?: string,
 ): IncludeExampleTag {
-	// Check for new bracket syntax: path/to/file[selector]
-	const bracketMatch = tag.match(/^(.+?)\[(.+)\]$/);
+	// Handle empty tag
+	if (!tag && !filePath) {
+		return { path: "" };
+	}
+
+	// Check for new bracket syntax: path/to/file[selector] or path/to/file[]
+	const bracketMatch = tag.match(/^(.+?)\[(.*)?\]$/);
 
 	if (bracketMatch) {
 		// New bracket syntax
 		const [, path, selectorString] = bracketMatch;
+
+		// Check for empty brackets
+		if (selectorString === "" || selectorString === undefined) {
+			throw new Error("Empty bracket syntax");
+		}
+
 		const includeExampleTag: IncludeExampleTag = { path };
 
 		// Parse the selector string using new bracket syntax
@@ -20,6 +31,11 @@ export function parseIncludeExampleTag(
 		includeExampleTag.parsedSelector = parsed;
 
 		return includeExampleTag;
+	}
+
+	// If tag contains brackets but doesn't match valid bracket syntax, it's malformed
+	if (tag.includes("[") || tag.includes("]")) {
+		throw new Error("Malformed bracket syntax");
 	}
 
 	// Check for old colon syntax: path/to/file:selector
@@ -45,7 +61,7 @@ export function parseIncludeExampleTag(
 	const path: string | undefined = tag || filePath;
 
 	if (!path) {
-		throw new Error("Path not found !");
+		return { path: "" };
 	}
 
 	return { path };

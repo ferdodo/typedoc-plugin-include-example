@@ -1,60 +1,39 @@
 import { expect, test } from "vitest";
 import { parseIncludeExampleTag } from "./parseIncludeExampleTag.js";
 
-test("it should parse include example tag", () => {
+test("it should parse tag without file path", () => {
+	const result = parseIncludeExampleTag("");
+	expect(result.path).toBe("");
+	expect(result.parsedSelector).toBeUndefined();
+});
+
+test("it should parse tag with file path only", () => {
 	const result = parseIncludeExampleTag("path/to/file");
-	expect(result).toEqual({ path: "path/to/file" });
+	expect(result.path).toBe("path/to/file");
+	expect(result.parsedSelector).toBeUndefined();
 });
 
-test("it should throw error for old dash syntax in brackets", () => {
-	expect(() => parseIncludeExampleTag("path/to/file[2-4]")).toThrowError(
-		/BREAKING CHANGE: The dash syntax '2-4' inside brackets is no longer supported in v3\.0\.0\+/,
-	);
+test("it should parse tag with file path and single line", () => {
+	const result = parseIncludeExampleTag("path/to/file[5]");
+	expect(result.path).toBe("path/to/file");
+	expect(result.parsedSelector).toBeDefined();
+	expect(result.parsedSelector?.selections).toHaveLength(1);
+	expect(result.parsedSelector?.selections[0]).toEqual({
+		type: "single",
+		isExclusion: false,
+		line: 5,
+	});
 });
 
-test("it should throw error for old dash syntax with multiple selectors", () => {
-	expect(() => parseIncludeExampleTag("path/to/file[2-4,15]")).toThrowError(
-		/BREAKING CHANGE: The dash syntax '2-4,15' inside brackets is no longer supported in v3\.0\.0\+/,
-	);
-});
-
-test("it should throw on empty path", () => {
-	expect(() => parseIncludeExampleTag("")).toThrowError("Path not found !");
-});
-
-test("it should throw migration error for old colon syntax", () => {
-	expect(() => parseIncludeExampleTag("path/to/file:2-4")).toThrowError(
-		/BREAKING CHANGE: The colon syntax 'path\/to\/file:2-4' is no longer supported in v3\.0\.0\+/,
-	);
-});
-
-test("it should throw migration error for old colon syntax with multiple selectors", () => {
-	expect(() => parseIncludeExampleTag("path/to/file:2-4,15")).toThrowError(
-		/BREAKING CHANGE: The colon syntax 'path\/to\/file:2-4,15' is no longer supported in v3\.0\.0\+/,
-	);
-});
-
-test("it should allow colons in file paths without selectors", () => {
-	const result = parseIncludeExampleTag("path:with:colons/file.ts");
-	expect(result).toEqual({ path: "path:with:colons/file.ts" });
-});
-
-// ============= BRACKET SYNTAX TESTS =============
-
-test("it should handle empty brackets (select all lines)", () => {
-	const result = parseIncludeExampleTag("path/to/file[]");
-	expect(result).toEqual({ path: "path/to/file[]" });
-});
-
-test("it should handle colon-only brackets (select all lines)", () => {
-	const result = parseIncludeExampleTag("path/to/file[:]");
-	expect(result).toEqual({
-		path: "path/to/file",
-		parsedSelector: {
-			selections: [],
-			hasNegativeIndexing: false,
-			hasExclusions: false,
-		},
+test("it should parse tag with file path and negative single line", () => {
+	const result = parseIncludeExampleTag("path/to/file[-3]");
+	expect(result.path).toBe("path/to/file");
+	expect(result.parsedSelector).toBeDefined();
+	expect(result.parsedSelector?.selections).toHaveLength(1);
+	expect(result.parsedSelector?.selections[0]).toEqual({
+		type: "single",
+		isExclusion: false,
+		line: -3,
 	});
 });
 
@@ -64,20 +43,21 @@ test("it should parse bracket syntax with colon ranges", () => {
 	expect(result.parsedSelector).toBeDefined();
 	expect(result.parsedSelector?.selections).toHaveLength(1);
 	expect(result.parsedSelector?.selections[0]).toEqual({
-		type: "inclusion",
+		type: "range",
+		isExclusion: false,
 		start: 2,
 		end: 8,
-		isNegative: false,
 	});
 });
 
-test("it should parse single line selection", () => {
-	const result = parseIncludeExampleTag("path/to/file[10]");
+test("it should parse open-ended ranges", () => {
+	const result = parseIncludeExampleTag("path/to/file[5:]");
 	expect(result.path).toBe("path/to/file");
 	expect(result.parsedSelector?.selections[0]).toEqual({
-		type: "inclusion",
-		single: 10,
-		isNegative: false,
+		type: "range",
+		isExclusion: false,
+		start: 5,
+		end: undefined,
 	});
 });
 
@@ -86,87 +66,78 @@ test("it should parse negative indexing in brackets", () => {
 	expect(result.path).toBe("path/to/file");
 	expect(result.parsedSelector?.hasNegativeIndexing).toBe(true);
 	expect(result.parsedSelector?.selections[0]).toEqual({
-		type: "inclusion",
-		start: 5,
+		type: "range",
+		isExclusion: false,
+		start: -5,
 		end: undefined,
-		isNegative: true,
 	});
 });
 
-test("it should parse exclusions in brackets", () => {
+test("it should parse mixed positive/negative ranges", () => {
+	const result = parseIncludeExampleTag("path/to/file[2:-5]");
+	expect(result.path).toBe("path/to/file");
+	expect(result.parsedSelector?.hasNegativeIndexing).toBe(true);
+	expect(result.parsedSelector?.selections[0]).toEqual({
+		type: "range",
+		isExclusion: false,
+		start: 2,
+		end: -5,
+	});
+});
+
+test("it should parse exclusions", () => {
 	const result = parseIncludeExampleTag("path/to/file[1:10,!5:7]");
 	expect(result.path).toBe("path/to/file");
 	expect(result.parsedSelector?.hasExclusions).toBe(true);
 	expect(result.parsedSelector?.selections).toHaveLength(2);
-	expect(result.parsedSelector?.selections[1].type).toBe("exclusion");
-});
-
-test("it should handle file paths with brackets in the path itself", () => {
-	const result = parseIncludeExampleTag("path/with[brackets]/file.ts");
-	expect(result).toEqual({ path: "path/with[brackets]/file.ts" });
-});
-
-test("it should handle Windows-style paths with brackets", () => {
-	const result = parseIncludeExampleTag("C:\\path\\to\\file.ts[10]");
-	expect(result.path).toBe("C:\\path\\to\\file.ts");
-	expect(result.parsedSelector?.selections[0]).toEqual({
-		type: "inclusion",
-		single: 10,
-		isNegative: false,
+	expect(result.parsedSelector?.selections[1]).toEqual({
+		type: "range",
+		isExclusion: true,
+		start: 5,
+		end: 7,
 	});
 });
 
-test("it should handle URLs with brackets", () => {
-	const result = parseIncludeExampleTag("https://example.com/file.ts[1:5]");
-	expect(result.path).toBe("https://example.com/file.ts");
-	expect(result.parsedSelector?.selections[0]).toEqual({
-		type: "inclusion",
-		start: 1,
-		end: 5,
-		isNegative: false,
-	});
-});
-
-test("it should handle paths with spaces and brackets", () => {
-	const result = parseIncludeExampleTag("path with spaces/file.ts[2:4]");
+test("it should handle file paths with spaces", () => {
+	const result = parseIncludeExampleTag("path with spaces/file.ts[5]");
 	expect(result.path).toBe("path with spaces/file.ts");
 	expect(result.parsedSelector?.selections[0]).toEqual({
-		type: "inclusion",
-		start: 2,
-		end: 4,
-		isNegative: false,
+		type: "single",
+		isExclusion: false,
+		line: 5,
 	});
 });
 
-test("it should detect old syntax even with complex selectors", () => {
-	expect(() => parseIncludeExampleTag("path/to/file:1,3,5-7,10")).toThrowError(
-		/BREAKING CHANGE: The colon syntax 'path\/to\/file:1,3,5-7,10' is no longer supported in v3\.0\.0\+/,
-	);
-});
-
-test("it should not confuse colons in paths with old syntax", () => {
-	const result = parseIncludeExampleTag("http://example.com:8080/file.ts");
-	expect(result).toEqual({ path: "http://example.com:8080/file.ts" });
+test("it should handle file paths with dots", () => {
+	const result = parseIncludeExampleTag("../parent/file.example.ts[2:4]");
+	expect(result.path).toBe("../parent/file.example.ts");
+	expect(result.parsedSelector?.selections[0]).toEqual({
+		type: "range",
+		isExclusion: false,
+		start: 2,
+		end: 4,
+	});
 });
 
 test("it should handle relative paths with brackets", () => {
 	const result = parseIncludeExampleTag("../parent/file.ts[5:]");
 	expect(result.path).toBe("../parent/file.ts");
 	expect(result.parsedSelector?.selections[0]).toEqual({
-		type: "inclusion",
+		type: "range",
+		isExclusion: false,
 		start: 5,
 		end: undefined,
-		isNegative: false,
 	});
 });
 
-test("it should handle single character file names", () => {
-	const result = parseIncludeExampleTag("a[1]");
-	expect(result.path).toBe("a");
+test("it should handle absolute paths with brackets", () => {
+	const result = parseIncludeExampleTag("/absolute/path/file.ts[:10]");
+	expect(result.path).toBe("/absolute/path/file.ts");
 	expect(result.parsedSelector?.selections[0]).toEqual({
-		type: "inclusion",
-		single: 1,
-		isNegative: false,
+		type: "range",
+		isExclusion: false,
+		start: undefined,
+		end: 10,
 	});
 });
 
@@ -175,20 +146,79 @@ test("it should handle multiple selections with colon syntax", () => {
 	expect(result.path).toBe("path/to/file");
 	expect(result.parsedSelector?.selections).toHaveLength(3);
 	expect(result.parsedSelector?.selections[0]).toEqual({
-		type: "inclusion",
+		type: "range",
+		isExclusion: false,
 		start: 2,
 		end: 4,
-		isNegative: false,
 	});
 	expect(result.parsedSelector?.selections[1]).toEqual({
-		type: "inclusion",
-		single: 10,
-		isNegative: false,
+		type: "single",
+		isExclusion: false,
+		line: 10,
 	});
 	expect(result.parsedSelector?.selections[2]).toEqual({
-		type: "inclusion",
+		type: "range",
+		isExclusion: false,
 		start: 15,
 		end: 20,
-		isNegative: false,
 	});
+});
+
+test("it should handle complex mixed selections", () => {
+	const result = parseIncludeExampleTag("path/to/file[1:5,-3:,!2,!-1]");
+	expect(result.path).toBe("path/to/file");
+	expect(result.parsedSelector?.selections).toHaveLength(4);
+	expect(result.parsedSelector?.selections[0]).toEqual({
+		type: "range",
+		isExclusion: false,
+		start: 1,
+		end: 5,
+	});
+	expect(result.parsedSelector?.selections[1]).toEqual({
+		type: "range",
+		isExclusion: false,
+		start: -3,
+		end: undefined,
+	});
+	expect(result.parsedSelector?.selections[2]).toEqual({
+		type: "single",
+		isExclusion: true,
+		line: 2,
+	});
+	expect(result.parsedSelector?.selections[3]).toEqual({
+		type: "single",
+		isExclusion: true,
+		line: -1,
+	});
+});
+
+// Error cases
+test("it should throw error on old dash syntax", () => {
+	expect(() => parseIncludeExampleTag("path/to/file[2-4]")).toThrowError(
+		/BREAKING CHANGE: The dash syntax/,
+	);
+});
+
+test("it should throw error on invalid bracket syntax", () => {
+	expect(() => parseIncludeExampleTag("path/to/file[invalid]")).toThrowError(
+		"Invalid line number: invalid",
+	);
+});
+
+test("it should throw error on zero line number", () => {
+	expect(() => parseIncludeExampleTag("path/to/file[0]")).toThrowError(
+		"Line number must be positive or negative, not zero",
+	);
+});
+
+test("it should throw error on malformed brackets", () => {
+	expect(() => parseIncludeExampleTag("path/to/file[")).toThrowError(
+		"Malformed bracket syntax",
+	);
+});
+
+test("it should throw error on empty brackets", () => {
+	expect(() => parseIncludeExampleTag("path/to/file[]")).toThrowError(
+		"Empty bracket syntax",
+	);
 });

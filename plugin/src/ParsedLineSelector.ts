@@ -1,7 +1,7 @@
 import type { LineSelection } from "./LineSelection.js";
 
-export interface ParsedLineSelector {
+export type ParsedLineSelector = {
 	selections: LineSelection[];
 	hasNegativeIndexing: boolean;
 	hasExclusions: boolean;
-}
+};
