@@ -7,7 +7,7 @@
 [![npm](https://img.shields.io/badge/coverage-blue)](https://ferdodo.github.io/typedoc-plugin-include-example/reports/mutation/mutation.html)
 [![npm](https://img.shields.io/badge/demo-green)](https://ferdodo.github.io/typedoc-plugin-include-example/)
 
-Include code examples in your [typedoc](https://typedoc.org/) documentations.
+Include code examples in your [typedoc](https://typedoc.org/) documentations with powerful bracket syntax for line selection.
 
 ## Installation
 
@@ -22,8 +22,8 @@ Write your example in a `*.example.ts` file.
 ```javascript
 // greet.example.ts
 
-import { greet } from "./greet.js"
-greet(); // Prints greetings 
+import { greet } from "./greet.js";
+greet(); // Prints greetings
 ```
 
 Add the @includeExample tag to the actual code.
@@ -33,11 +33,11 @@ Add the @includeExample tag to the actual code.
 
 /**
  * Says hello !
- * 
+ *
  * @includeExample
  */
 export function greet() {
-    console.log("Hello there.")
+  console.log("Hello there.");
 }
 ```
 
@@ -47,9 +47,22 @@ Then generate your documentation using typedoc using this plugin.
 $ npx typedoc --plugin typedoc-plugin-include-example
 ```
 
+## Line Selection
+
+Control which lines to include with bracket syntax:
+
+```typescript
+/**
+ * @includeExample greet.example.ts                 // Include entire file
+ * @includeExample greet.example.ts[5]              // Include line 5 only
+ * @includeExample greet.example.ts[2:8]            // Include lines 2-8
+ * @includeExample greet.example.ts[2:5,10,15:20]   // Multiple selections
+ */
+```
+
 ## Features
 
-See the [Documentation](./docs.md) for full usage.
+See the [Documentation](./docs.md) for full usage including advanced bracket syntax, exclusions, negative indexing, and troubleshooting.
 
 ## Links
 

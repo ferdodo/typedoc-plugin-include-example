@@ -13,7 +13,7 @@ COPY --from=plugin /typedoc-plugin-include-example/plugin /typedoc-plugin-includ
 WORKDIR /typedoc-plugin-include-example/plugin
 RUN npm pack
 WORKDIR /typedoc-plugin-include-example/demo
-RUN npm install ../plugin/typedoc-plugin-include-example-2.1.2.tgz
+RUN npm install ../plugin/typedoc-plugin-include-example-3.0.0.tgz
 
 COPY . .
 RUN npm run build

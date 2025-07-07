@@ -1,4 +1,5 @@
 import type { IncludeExampleTag } from "./IncludeExampleTag.js";
+import { resolveLineSelections } from "./resolveLineSelections.js";
 
 export function applyLineSelection(
 	content: string,
@@ -6,21 +7,28 @@ export function applyLineSelection(
 ): string {
 	const lines = content.split("\n");
 
-	if (includeExampleTag.lines === undefined) {
-		return content;
+	// Handle parsed selector syntax
+	if (includeExampleTag.parsedSelector) {
+		const resolvedLines = resolveLineSelections(
+			includeExampleTag.parsedSelector,
+			lines.length,
+		);
+
+		return resolvedLines
+			.map((lineNumber: number) => {
+				const line = lines[lineNumber - 1];
+
+				if (line === undefined) {
+					throw new Error(
+						`Line number ${lineNumber} is out of range for file ${includeExampleTag.path}`,
+					);
+				}
+
+				return line;
+			})
+			.join("\n");
 	}
 
-	return includeExampleTag.lines
-		.map((lineNumber: number) => {
-			const line = lines[lineNumber - 1];
-
-			if (line === undefined) {
-				throw new Error(
-					`Line number ${lineNumber} is out of range for file ${includeExampleTag.path}`,
-				);
-			}
-
-			return line;
-		})
-		.join("\n");
+	// No selector - use entire file
+	return content;
 }

@@ -24,6 +24,14 @@ export function findExample(comment: Comment): string | null {
 	);
 
 	if (!existsSync(includeExampleTag.path)) {
+		// Try resolving relative to source file directory
+		const relativePath = join(dir, includeExampleTag.path);
+		if (existsSync(relativePath)) {
+			includeExampleTag.path = relativePath;
+		}
+	}
+
+	if (!existsSync(includeExampleTag.path)) {
 		throw new Error(`File not found for ${includeExampleTag.path}`);
 	}
 

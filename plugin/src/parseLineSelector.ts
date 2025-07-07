@@ -1,41 +1,147 @@
-export function parseLineSelector(lineSelectorString: string): number[] {
-	if (lineSelectorString.includes("-")) {
-		const lineRange: string[] = lineSelectorString.split("-");
-		const startString: string | undefined = lineRange[0];
-		const endString: string | undefined = lineRange[1];
-		const start: number = Number.parseInt(startString);
-		const end: number = Number.parseInt(endString);
+import type { LineSelection } from "./LineSelection.js";
+import type { ParsedLineSelector } from "./ParsedLineSelector.js";
+import utils from "./utils.js";
 
-		if (!Number.isFinite(start)) {
-			throw new Error("Failed to parse range start !");
-		}
-
-		if (!Number.isFinite(end)) {
-			throw new Error("Failed to parse range end !");
-		}
-
-		if (start < 1) {
-			throw new Error("Range start not positive !");
-		}
-
-		if (start >= end) {
-			throw new Error("Range start is greater or equal to range end !");
-		}
-
-		const range: number[] = [];
-
-		for (let i = start; i <= end; i++) {
-			range.push(i);
-		}
-
-		return range;
+export function parseLineSelector(
+	lineSelectorString: string,
+): ParsedLineSelector {
+	// Handle empty or whitespace-only selectors
+	const trimmed = lineSelectorString.trim();
+	if (!trimmed || trimmed === ":") {
+		return { selections: [], hasNegativeIndexing: false, hasExclusions: false };
 	}
 
-	const line = Number.parseInt(lineSelectorString);
-
-	if (!Number.isFinite(line)) {
-		throw new Error("Failed to parse line number !");
+	// v3.0.0: Only support new bracket syntax with colons
+	// Old dash syntax is no longer supported
+	if (hasOldDashSyntax(trimmed)) {
+		throw new Error(
+			`BREAKING CHANGE: The dash syntax '${trimmed}' inside brackets is no longer supported in v3.0.0+. Please use colon syntax instead. Examples: '2-4' → '2:4', '5-7,11' → '5:7,11'. See documentation for the new bracket syntax.`,
+		);
 	}
 
-	return [line];
+	return parseSelections(trimmed);
+}
+
+function hasOldDashSyntax(selector: string): boolean {
+	return selector
+		.split(",")
+		.map((part) => part.trim())
+		.some((part) => {
+			// Skip exclusions for this check
+			const cleanPart = part.startsWith("!") ? part.slice(1) : part;
+
+			// If it contains a colon, it's new syntax
+			if (cleanPart.includes(":")) return false;
+
+			// Check for dash patterns that are NOT single negative numbers
+			if (cleanPart.includes("-")) {
+				// Single negative number is valid: -5
+				if (/^-\d+$/.test(cleanPart)) return false;
+				// Dash range like "2-4" is old syntax
+				return true;
+			}
+
+			return false;
+		});
+}
+
+function parseSelections(selector: string): ParsedLineSelector {
+	const selections: LineSelection[] = [];
+	let hasNegativeIndexing = false;
+	let hasExclusions = false;
+
+	// Split by comma and parse each part
+	const parts = selector.split(",").map((part) => part.trim());
+
+	for (const part of parts) {
+		if (!part) continue;
+
+		// Handle exclusion syntax
+		const isExclusion = part.startsWith("!");
+		const cleanPart = isExclusion ? part.slice(1) : part;
+
+		if (isExclusion) {
+			hasExclusions = true;
+		}
+
+		// Parse the selection
+		const selection = parseSelection(cleanPart, isExclusion);
+
+		// Check if this selection uses negative indexing
+		if (selection.type === "single" && selection.line < 0) {
+			hasNegativeIndexing = true;
+		} else if (
+			selection.type === "range" &&
+			((selection.start !== undefined && selection.start < 0) ||
+				(selection.end !== undefined && selection.end < 0))
+		) {
+			hasNegativeIndexing = true;
+		}
+
+		selections.push(selection);
+	}
+
+	return { selections, hasNegativeIndexing, hasExclusions };
+}
+
+function parseLineNumber(value: string, context: string): number {
+	const num = Number.parseInt(value);
+	if (!Number.isFinite(num)) {
+		throw new Error(`Invalid ${context}: ${value}`);
+	}
+	if (num === 0) {
+		throw new Error(
+			`${utils.capitalize(context)} must be positive or negative, not zero`,
+		);
+	}
+	return num;
+}
+
+function parseSelection(part: string, isExclusion: boolean): LineSelection {
+	// Handle single line (positive or negative)
+	if (!part.includes(":")) {
+		const num = parseLineNumber(part, "line number");
+		return {
+			type: "single",
+			isExclusion,
+			line: num,
+		};
+	}
+
+	// Handle range syntax (start:end, start:, :end, :)
+	const colonIndex = part.indexOf(":");
+	const startStr = part.slice(0, colonIndex);
+	const endStr = part.slice(colonIndex + 1);
+
+	let start: number | undefined;
+	let end: number | undefined;
+
+	// Parse start
+	if (startStr) {
+		start = parseLineNumber(startStr, "range start");
+	}
+
+	// Parse end
+	if (endStr) {
+		end = parseLineNumber(endStr, "range end");
+	}
+
+	// Validate forward range logic for same-sign ranges only
+	if (
+		start !== undefined &&
+		end !== undefined &&
+		((start > 0 && end > 0) || (start < 0 && end < 0)) &&
+		start > end
+	) {
+		throw new Error(
+			`Range start (${start}) must be less than or equal to range end (${end})`,
+		);
+	}
+
+	return {
+		type: "range",
+		isExclusion,
+		start,
+		end,
+	};
 }

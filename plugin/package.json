@@ -1,6 +1,6 @@
 {
 	"name": "typedoc-plugin-include-example",
-	"version": "2.1.2",
+	"version": "3.0.0",
 	"license": "MIT",
 	"type": "module",
 	"description": "Typedoc plugin to include files as example",
@@ -23,7 +23,10 @@
 		"Gerrit Birkeland (https://github.com/Gerrit0)"
 	],
 	"scripts": {
-		"build": "tsc --noEmit && vitest run && biome ci && exportcase check src && stryker run && tsc"
+		"build": "tsc --noEmit && vitest run && biome ci && exportcase check src && stryker run && tsc",
+		"format": "biome format --write .",
+		"docker": "docker compose up -d --build",
+		"build:docker": "npm run format && npm run docker"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

@@ -1,4 +1,6 @@
-export interface IncludeExampleTag {
+import type { ParsedLineSelector } from "./ParsedLineSelector.js";
+
+export type IncludeExampleTag = {
 	path: string;
-	lines?: number[];
-}
+	parsedSelector?: ParsedLineSelector;
+};
