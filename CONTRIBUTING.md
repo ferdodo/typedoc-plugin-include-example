@@ -62,6 +62,40 @@ npx playwright install
 npm run build
 ```
 
+## Available Scripts
+
+The project provides several npm scripts for development:
+
+```bash
+# Format code with Biome
+npm run format
+
+# Run Docker build process
+npm run docker
+
+# Format code and run Docker build (combines both above)
+npm run build:docker
+
+# Run full build pipeline (TypeScript, tests, linting, mutation testing)
+npm run build
+```
+
+## Code Formatting
+
+To format the entire codebase, you can use either:
+
+```bash
+npm run format
+```
+
+Or directly:
+
+```bash
+npx biome format --write .
+```
+
+This will automatically format all files according to the project's style guidelines.
+
 ## Code Coverage and Testing
 
 We use Stryker for code coverage verification. If you add new code, you'll likely need to add corresponding tests with Vitest. Pull requests with insufficient code coverage will not pass the build process.
