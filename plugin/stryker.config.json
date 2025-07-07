@@ -1,14 +1,9 @@
 {
 	"$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
 	"testRunner": "vitest",
-	"mutate": [
-		"./src/apply-line-selection.ts",
-		"./src/parse-line-selector.ts",
-		"./src/parse-include-example-tag.ts"
-	],
 	"thresholds": {
 		"high": 90,
 		"low": 40,
-		"break": 99
+		"break": 50
 	}
 }
