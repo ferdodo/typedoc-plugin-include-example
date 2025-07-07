@@ -1,43 +1,43 @@
 {
-  "name": "typedoc-plugin-include-example",
-  "version": "3.0.0",
-  "license": "MIT",
-  "type": "module",
-  "description": "Typedoc plugin to include files as example",
-  "main": "dist/index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ferdodo/typedoc-plugin-include-example.git"
-  },
-  "keywords": [
-    "typedoc",
-    "plugin",
-    "example",
-    "typedocplugin",
-    "typedoc-plugin"
-  ],
-  "author": "Thomas Riffard (https://github.com/ferdodo)",
-  "contributors": [
-    "Jeremy Cherer (https://github.com/JavaLavaMT)",
-    "Rocky Warren (https://github.com/therockstorm)",
-    "Gerrit Birkeland (https://github.com/Gerrit0)"
-  ],
-  "scripts": {
-    "build": "tsc --noEmit && vitest run && biome ci && exportcase check src && stryker run && tsc",
-    "format": "biome format --write .",
-    "docker": "docker compose up -d --build",
-    "build:docker": "npm run format && npm run docker"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@stryker-mutator/core": "^8.6.0",
-    "@stryker-mutator/vitest-runner": "^8.6.0",
-    "@types/node": "^22.10.1",
-    "exportcase": "^0.11.0",
-    "typescript": "^5.6.3",
-    "vitest": "^3.1.1"
-  },
-  "peerDependencies": {
-    "typedoc": "0.26.x || 0.27.x || 0.28.x"
-  }
+	"name": "typedoc-plugin-include-example",
+	"version": "3.0.0",
+	"license": "MIT",
+	"type": "module",
+	"description": "Typedoc plugin to include files as example",
+	"main": "dist/index.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ferdodo/typedoc-plugin-include-example.git"
+	},
+	"keywords": [
+		"typedoc",
+		"plugin",
+		"example",
+		"typedocplugin",
+		"typedoc-plugin"
+	],
+	"author": "Thomas Riffard (https://github.com/ferdodo)",
+	"contributors": [
+		"Jeremy Cherer (https://github.com/JavaLavaMT)",
+		"Rocky Warren (https://github.com/therockstorm)",
+		"Gerrit Birkeland (https://github.com/Gerrit0)"
+	],
+	"scripts": {
+		"build": "tsc --noEmit && vitest run && biome ci && exportcase check src && stryker run && tsc",
+		"format": "biome format --write .",
+		"docker": "docker compose up -d --build",
+		"build:docker": "npm run format && npm run docker"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@stryker-mutator/core": "^8.6.0",
+		"@stryker-mutator/vitest-runner": "^8.6.0",
+		"@types/node": "^22.10.1",
+		"exportcase": "^0.11.0",
+		"typescript": "^5.6.3",
+		"vitest": "^3.1.1"
+	},
+	"peerDependencies": {
+		"typedoc": "0.26.x || 0.27.x || 0.28.x"
+	}
 }
