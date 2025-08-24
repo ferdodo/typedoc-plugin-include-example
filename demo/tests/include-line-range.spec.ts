@@ -1,50 +1,112 @@
-import path from "node:path";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "vitest";
+import { generateAndMountDocs } from "./generateAndMountDocs.js";
 
-const filePath = `file://${path.join(process.cwd(), "docs/classes/Library.html")}`;
+test("Should inject a title named 'Example'", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Library.ts"],
+		htmlRelativePath: "classes/Library.html",
+	});
 
-test("Should inject a title named 'Example'", async ({ page }) => {
-	await page.goto(filePath);
-	const title = page.getByRole("heading", { level: 3, name: "Example" });
-	await expect(title).toBeVisible();
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const title = container?.querySelector("h3");
+	expect(title?.textContent).toContain("Example");
 });
 
-test("Should inject the line 4", async ({ page }) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code");
-	await expect(code).toContainText("// this line range");
+test("Should inject the line 4", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Library.ts"],
+		htmlRelativePath: "classes/Library.html",
+	});
+
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).toContain("// this line range");
 });
 
-test("Should inject the line 5", async ({ page }) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code");
-	await expect(code).toContainText("// shall be included");
+test("Should inject the line 5", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Library.ts"],
+		htmlRelativePath: "classes/Library.html",
+	});
+
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).toContain("// shall be included");
 });
 
-test("Should inject the line 6", async ({ page }) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code");
-	await expect(code).toContainText("// in the example");
+test("Should inject the line 6", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Library.ts"],
+		htmlRelativePath: "classes/Library.html",
+	});
+
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).toContain("// in the example");
 });
 
-test("Previous line to the line range should not be included", async ({
-	page,
-}) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code");
+test("Previous line to the line range should not be included", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Library.ts"],
+		htmlRelativePath: "classes/Library.html",
+	});
 
-	await expect(code).not.toContainText(
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).not.toContain(
 		"// this previous line should not be in the docs",
 	);
 });
 
-test("Next line to the specific line range shall not be in the doc", async ({
-	page,
-}) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code");
+test("Next line to the specific line range shall not be in the doc", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Library.ts"],
+		htmlRelativePath: "classes/Library.html",
+	});
 
-	await expect(code).not.toContainText(
-		"// this next line should not be in the docs",
-	);
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).not.toContain("// this next line should not be in the docs");
 });

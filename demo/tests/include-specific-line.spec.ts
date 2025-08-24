@@ -1,41 +1,74 @@
-import path from "node:path";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "vitest";
+import { generateAndMountDocs } from "./generateAndMountDocs.js";
 
-const filePath = `file://${path.join(process.cwd(), "docs/classes/Author.html")}`;
+test("Should inject a title named 'Example'", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Author.ts"],
+		htmlRelativePath: "classes/Author.html",
+	});
 
-test("Should inject a title named 'Example'", async ({ page }) => {
-	await page.goto(filePath);
-	const title = page.getByRole("heading", { level: 3, name: "Example" });
-	await expect(title).toBeVisible();
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const title = container?.querySelector("h3");
+	expect(title?.textContent).toContain("Example");
 });
 
-test("Should inject the specific line", async ({ page }) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code");
+test("Should inject the specific line", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Author.ts"],
+		htmlRelativePath: "classes/Author.html",
+	});
 
-	await expect(code).toContainText(
-		"only this line shall be included in the docs",
-	);
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).toContain("only this line shall be included in the docs");
 });
 
-test("Previous line to the specific line shall not be in the doc", async ({
-	page,
-}) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code");
+test("Previous line to the specific line shall not be in the doc", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Author.ts"],
+		htmlRelativePath: "classes/Author.html",
+	});
 
-	await expect(code).not.toContainText(
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).not.toContain(
 		"this previous line should not be in the docs",
 	);
 });
 
-test("Next line to the specific line shall not be in the doc", async ({
-	page,
-}) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code");
+test("Next line to the specific line shall not be in the doc", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Author.ts"],
+		htmlRelativePath: "classes/Author.html",
+	});
 
-	await expect(code).not.toContainText(
-		"this next line should not be in the docs",
-	);
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).not.toContain("this next line should not be in the docs");
 });

@@ -10,6 +10,8 @@
 		"outDir": "dist",
 		"declaration": true,
 		"declarationDir": "dist",
-		"rootDir": "src"
-	}
+		"rootDir": "src",
+		"lib": ["ES2020", "DOM"]
+	},
+	"exclude": ["vitest.config.ts"]
 }

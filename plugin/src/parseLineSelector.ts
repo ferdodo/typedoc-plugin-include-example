@@ -1,6 +1,6 @@
 import type { LineSelection } from "./LineSelection.js";
 import type { ParsedLineSelector } from "./ParsedLineSelector.js";
-import utils from "./utils.js";
+import { capitalize } from "./capitalize.js";
 
 export function parseLineSelector(
 	lineSelectorString: string,
@@ -91,7 +91,7 @@ function parseLineNumber(value: string, context: string): number {
 	}
 	if (num === 0) {
 		throw new Error(
-			`${utils.capitalize(context)} must be positive or negative, not zero`,
+			`${capitalize(context)} must be positive or negative, not zero`,
 		);
 	}
 	return num;

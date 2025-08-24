@@ -1,36 +1,56 @@
-import path from "node:path";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "vitest";
+import { generateAndMountDocs } from "./generateAndMountDocs.js";
 
-const filePath = `file://${path.join(
-	process.cwd(),
-	"docs/classes/Publisher.html",
-)}`;
+test("Should inject a title named 'Example'", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Publisher.ts"],
+		htmlRelativePath: "classes/Publisher.html",
+	});
 
-test("Should inject a title named 'Example'", async ({ page }) => {
-	await page.goto(filePath);
-	const title = page.getByRole("heading", { level: 3, name: "Example" });
-	await expect(title).toBeVisible();
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const title = container?.querySelector("h3");
+	expect(title?.textContent).toContain("Example");
 });
 
-test("Should handle negative indexing syntax to include last 5 lines", async ({
-	page,
-}) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code").first();
+test("Should handle negative indexing syntax to include last 5 lines", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Publisher.ts"],
+		htmlRelativePath: "classes/Publisher.html",
+	});
 
-	// Should include the final publishing steps (last 5 lines)
-	await expect(code).toContainText("Final publishing steps");
-	await expect(code).toContainText("Finalizing publication process");
-	await expect(code).toContainText("Publication complete");
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).toContain("Final publishing steps");
+	expect(codeText).toContain("Finalizing publication process");
+	expect(codeText).toContain("Publication complete");
 });
 
-test("Should exclude earlier lines when using negative indexing", async ({
-	page,
-}) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code").first();
+test("Should exclude earlier lines when using negative indexing", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Publisher.ts"],
+		htmlRelativePath: "classes/Publisher.html",
+	});
 
-	// Should not include the initial setup lines
-	await expect(code).not.toContainText("Initialize publisher");
-	await expect(code).not.toContainText("Add books to catalog");
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).not.toContain("Initialize publisher");
+	expect(codeText).not.toContain("Add books to catalog");
 });

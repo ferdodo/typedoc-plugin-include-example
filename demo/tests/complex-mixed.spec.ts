@@ -1,53 +1,78 @@
-import path from "node:path";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "vitest";
+import { generateAndMountDocs } from "./generateAndMountDocs.js";
 
-const filePath = `file://${path.join(
-	process.cwd(),
-	"docs/classes/Review.html",
-)}`;
+test("Should inject a title named 'Example'", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Review.ts"],
+		htmlRelativePath: "classes/Review.html",
+	});
 
-test("Should inject a title named 'Example'", async ({ page }) => {
-	await page.goto(filePath);
-	const title = page.getByRole("heading", { level: 3, name: "Example" });
-	await expect(title).toBeVisible();
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const title = container?.querySelector("h3");
+	expect(title?.textContent).toContain("Example");
 });
 
-test("Should handle complex mixed syntax with ranges and exclusions", async ({
-	page,
-}) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code").first();
+test("Should handle complex mixed syntax with ranges and exclusions", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Review.ts"],
+		htmlRelativePath: "classes/Review.html",
+	});
 
-	// Should include the setup and processing sections
-	await expect(code).toContainText("Setup review data");
-	await expect(code).toContainText("Process review");
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).toContain("Setup review data");
+	expect(codeText).toContain("Process review");
 });
 
-test("Should exclude validation section when using mixed syntax", async ({
-	page,
-}) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code").first();
+test("Should exclude validation section when using mixed syntax", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Review.ts"],
+		htmlRelativePath: "classes/Review.html",
+	});
 
-	// Should not include the validation section (lines 6-10)
-	await expect(code).not.toContainText("VALIDATION: Input sanitization");
-	await expect(code).not.toContainText("Math.min(Math.max");
-	await expect(code).not.toContainText("END VALIDATION SECTION");
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
+
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).not.toContain("VALIDATION: Input sanitization");
+	expect(codeText).not.toContain("Math.min(Math.max");
+	expect(codeText).not.toContain("END VALIDATION SECTION");
 });
 
-test("Should include lines from specified ranges while excluding others", async ({
-	page,
-}) => {
-	await page.goto(filePath);
-	const code = page.getByRole("code").first();
+test("Should include lines from specified ranges while excluding others", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Review.ts"],
+		htmlRelativePath: "classes/Review.html",
+	});
 
-	// Should include the review creation and processing
-	await expect(code).toContainText("Create review instance");
-	await expect(code).toContainText("Processing review");
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
 
-	// Should include the variable usage (even though definition was excluded)
-	await expect(code).toContainText("sanitizedComment");
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
 
-	// Should exclude the validation logic
-	await expect(code).not.toContainText("Math.min(Math.max");
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).toContain("Create review instance");
+	expect(codeText).toContain("Processing review");
+	expect(codeText).toContain("sanitizedComment");
+	expect(codeText).not.toContain("Math.min(Math.max");
 });

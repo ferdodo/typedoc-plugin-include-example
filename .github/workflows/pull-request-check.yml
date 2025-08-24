@@ -27,10 +27,8 @@ jobs:
 
       - name: Install and Build demo 🔧
         run: |
-          npx playwright install-deps
           npm install
           npm install ../plugin/typedoc-plugin-include-example-3.0.0.tgz
           npm audit --audit-level=low
-          npx playwright install
           npm run build
         working-directory: ./demo

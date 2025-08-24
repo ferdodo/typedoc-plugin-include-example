@@ -1,27 +1,38 @@
-import path from "node:path";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "vitest";
+import { generateAndMountDocs } from "./generateAndMountDocs.js";
 
-test("Should inject a title named 'Example'", async ({ page }) => {
-	const filePath = path.join(process.cwd(), "docs/classes/Book.html");
-	await page.goto(`file://${filePath}`);
-	const title = page.getByRole("heading", { level: 3, name: "Example" });
-	await expect(title).toBeVisible();
+test("Should inject a title named 'Example'", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Book.ts"],
+		htmlRelativePath: "classes/Book.html",
+	});
+
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
+
+	const title = container?.querySelector("h3");
+	expect(title?.textContent).toContain("Example");
 });
 
-test("Should inject the example code source", async ({ page }) => {
-	const filePath = path.join(process.cwd(), "docs/classes/Book.html");
-	await page.goto(`file://${filePath}`);
-	const code = page.getByRole("code");
+test("Should inject the example code source", async () => {
+	const testId = await generateAndMountDocs({
+		entryPoints: ["src/Book.ts"],
+		htmlRelativePath: "classes/Book.html",
+	});
 
-	await expect(code).toContainText(
-		'const book = new Book("The Lord of the Rings");',
-	);
+	const container = document.querySelector(`[data-testid="${testId}"]`);
+	expect(container).not.toBeNull();
 
-	await expect(code).toContainText(
-		"const frenchTitle = book.translateTitle();",
-	);
+	const codeBlocks = container?.querySelectorAll("code");
+	expect(codeBlocks?.length).toBeGreaterThan(0);
 
-	await expect(code).toContainText(
+	const codeText = Array.from(codeBlocks || [])
+		.map((block) => block.textContent)
+		.join(" ");
+
+	expect(codeText).toContain('const book = new Book("The Lord of the Rings");');
+	expect(codeText).toContain("const frenchTitle = book.translateTitle();");
+	expect(codeText).toContain(
 		'console.log(frenchTitle); // "le Lord de le Rings"',
 	);
 });
