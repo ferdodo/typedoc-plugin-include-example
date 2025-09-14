@@ -1,14 +1,10 @@
 import type { LineSelection } from "./LineSelection.js";
-import type { ParsedLineSelector } from "./ParsedLineSelector.js";
-import { capitalize } from "./capitalize.js";
 
-export function parseLineSelector(
-	lineSelectorString: string,
-): ParsedLineSelector {
+export function parseLineSelector(lineSelectorString: string): LineSelection[] {
 	// Handle empty or whitespace-only selectors
 	const trimmed = lineSelectorString.trim();
 	if (!trimmed || trimmed === ":") {
-		return { selections: [], hasNegativeIndexing: false, hasExclusions: false };
+		return [];
 	}
 
 	// v3.0.0: Only support new bracket syntax with colons
@@ -45,43 +41,19 @@ function hasOldDashSyntax(selector: string): boolean {
 		});
 }
 
-function parseSelections(selector: string): ParsedLineSelector {
+function parseSelections(selector: string): LineSelection[] {
 	const selections: LineSelection[] = [];
-	let hasNegativeIndexing = false;
-	let hasExclusions = false;
-
-	// Split by comma and parse each part
 	const parts = selector.split(",").map((part) => part.trim());
 
 	for (const part of parts) {
 		if (!part) continue;
-
-		// Handle exclusion syntax
 		const isExclusion = part.startsWith("!");
 		const cleanPart = isExclusion ? part.slice(1) : part;
-
-		if (isExclusion) {
-			hasExclusions = true;
-		}
-
-		// Parse the selection
 		const selection = parseSelection(cleanPart, isExclusion);
-
-		// Check if this selection uses negative indexing
-		if (selection.type === "single" && selection.line < 0) {
-			hasNegativeIndexing = true;
-		} else if (
-			selection.type === "range" &&
-			((selection.start !== undefined && selection.start < 0) ||
-				(selection.end !== undefined && selection.end < 0))
-		) {
-			hasNegativeIndexing = true;
-		}
-
 		selections.push(selection);
 	}
 
-	return { selections, hasNegativeIndexing, hasExclusions };
+	return selections;
 }
 
 function parseLineNumber(value: string, context: string): number {
@@ -90,9 +62,7 @@ function parseLineNumber(value: string, context: string): number {
 		throw new Error(`Invalid ${context}: ${value}`);
 	}
 	if (num === 0) {
-		throw new Error(
-			`${capitalize(context)} must be positive or negative, not zero`,
-		);
+		throw new Error(`${context} must be positive or negative, not zero`);
 	}
 	return num;
 }
@@ -124,18 +94,6 @@ function parseSelection(part: string, isExclusion: boolean): LineSelection {
 	// Parse end
 	if (endStr) {
 		end = parseLineNumber(endStr, "range end");
-	}
-
-	// Validate forward range logic for same-sign ranges only
-	if (
-		start !== undefined &&
-		end !== undefined &&
-		((start > 0 && end > 0) || (start < 0 && end < 0)) &&
-		start > end
-	) {
-		throw new Error(
-			`Range start (${start}) must be less than or equal to range end (${end})`,
-		);
 	}
 
 	return {

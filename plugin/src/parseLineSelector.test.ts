@@ -2,13 +2,10 @@ import { expect, test } from "vitest";
 import { parseLineSelector } from "./parseLineSelector.js";
 import { resolveLineSelections } from "./resolveLineSelections.js";
 
-// ============= PARSING TESTS =============
-
-// Basic single line tests
 test("Should parse single line", () => {
 	const result = parseLineSelector("5");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "single",
 		isExclusion: false,
 		line: 5,
@@ -17,43 +14,38 @@ test("Should parse single line", () => {
 
 test("Should parse negative single line", () => {
 	const result = parseLineSelector("-3");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "single",
 		isExclusion: false,
 		line: -3,
 	});
-	expect(result.hasNegativeIndexing).toBe(true);
 });
 
 test("Should parse single line exclusion", () => {
 	const result = parseLineSelector("!5");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "single",
 		isExclusion: true,
 		line: 5,
 	});
-	expect(result.hasExclusions).toBe(true);
 });
 
 test("Should parse negative single line exclusion", () => {
 	const result = parseLineSelector("!-3");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "single",
 		isExclusion: true,
 		line: -3,
 	});
-	expect(result.hasNegativeIndexing).toBe(true);
-	expect(result.hasExclusions).toBe(true);
 });
 
-// Range tests
 test("Should parse open-ended range from start", () => {
 	const result = parseLineSelector("5:");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "range",
 		isExclusion: false,
 		start: 5,
@@ -63,8 +55,8 @@ test("Should parse open-ended range from start", () => {
 
 test("Should parse open-ended range to end", () => {
 	const result = parseLineSelector(":10");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "range",
 		isExclusion: false,
 		start: undefined,
@@ -74,8 +66,8 @@ test("Should parse open-ended range to end", () => {
 
 test("Should parse closed range", () => {
 	const result = parseLineSelector("2:8");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "range",
 		isExclusion: false,
 		start: 2,
@@ -85,81 +77,74 @@ test("Should parse closed range", () => {
 
 test("Should parse negative range", () => {
 	const result = parseLineSelector("-10:-5");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "range",
 		isExclusion: false,
 		start: -10,
 		end: -5,
 	});
-	expect(result.hasNegativeIndexing).toBe(true);
 });
 
 test("Should parse negative open-ended range", () => {
 	const result = parseLineSelector("-5:");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "range",
 		isExclusion: false,
 		start: -5,
 		end: undefined,
 	});
-	expect(result.hasNegativeIndexing).toBe(true);
 });
 
 test("Should parse open-ended range to negative end", () => {
 	const result = parseLineSelector(":-3");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "range",
 		isExclusion: false,
 		start: undefined,
 		end: -3,
 	});
-	expect(result.hasNegativeIndexing).toBe(true);
 });
 
-// NEW: Mixed positive/negative range tests
 test("Should parse mixed positive start to negative end", () => {
 	const result = parseLineSelector("2:-5");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "range",
 		isExclusion: false,
 		start: 2,
 		end: -5,
 	});
-	expect(result.hasNegativeIndexing).toBe(true);
 });
 
 test("Should parse mixed negative start to positive end", () => {
 	const result = parseLineSelector("-8:5");
-	expect(result.selections).toHaveLength(1);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
 		type: "range",
 		isExclusion: false,
 		start: -8,
 		end: 5,
 	});
-	expect(result.hasNegativeIndexing).toBe(true);
 });
 
-// Multiple selections
 test("Should parse multiple selections", () => {
 	const result = parseLineSelector("2:5,10,15:20");
-	expect(result.selections).toHaveLength(3);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(3);
+	expect(result[0]).toEqual({
 		type: "range",
 		isExclusion: false,
 		start: 2,
 		end: 5,
 	});
-	expect(result.selections[1]).toEqual({
+	expect(result[1]).toEqual({
 		type: "single",
 		isExclusion: false,
 		line: 10,
 	});
-	expect(result.selections[2]).toEqual({
+	expect(result[2]).toEqual({
 		type: "range",
 		isExclusion: false,
 		start: 15,
@@ -167,53 +152,45 @@ test("Should parse multiple selections", () => {
 	});
 });
 
-// Range exclusions
 test("Should parse range exclusions", () => {
 	const result = parseLineSelector("1:20,!8:12");
-	expect(result.selections).toHaveLength(2);
-	expect(result.selections[0]).toEqual({
+	expect(result).toHaveLength(2);
+	expect(result[0]).toEqual({
 		type: "range",
 		isExclusion: false,
 		start: 1,
 		end: 20,
 	});
-	expect(result.selections[1]).toEqual({
+	expect(result[1]).toEqual({
 		type: "range",
 		isExclusion: true,
 		start: 8,
 		end: 12,
 	});
-	expect(result.hasExclusions).toBe(true);
 });
 
 test("Should parse negative exclusions", () => {
 	const result = parseLineSelector("1:20,!-5:-2");
-	expect(result.selections).toHaveLength(2);
-	expect(result.selections[1]).toEqual({
+	expect(result).toHaveLength(2);
+	expect(result[1]).toEqual({
 		type: "range",
 		isExclusion: true,
 		start: -5,
 		end: -2,
 	});
-	expect(result.hasNegativeIndexing).toBe(true);
-	expect(result.hasExclusions).toBe(true);
 });
 
-// NEW: Mixed exclusion tests
 test("Should parse mixed positive/negative exclusions", () => {
 	const result = parseLineSelector("1:20,!2:-3");
-	expect(result.selections).toHaveLength(2);
-	expect(result.selections[1]).toEqual({
+	expect(result).toHaveLength(2);
+	expect(result[1]).toEqual({
 		type: "range",
 		isExclusion: true,
 		start: 2,
 		end: -3,
 	});
-	expect(result.hasNegativeIndexing).toBe(true);
-	expect(result.hasExclusions).toBe(true);
 });
 
-// Error cases
 test("Should throw error on invalid line number", () => {
 	expect(() => parseLineSelector("abc")).toThrowError(
 		"Invalid line number: abc",
@@ -222,19 +199,19 @@ test("Should throw error on invalid line number", () => {
 
 test("Should throw error on zero line number", () => {
 	expect(() => parseLineSelector("0")).toThrowError(
-		"Line number must be positive or negative, not zero",
+		"line number must be positive or negative, not zero",
 	);
 });
 
 test("Should throw error on zero range start", () => {
 	expect(() => parseLineSelector("0:10")).toThrowError(
-		"Range start must be positive or negative, not zero",
+		"range start must be positive or negative, not zero",
 	);
 });
 
 test("Should throw error on zero range end", () => {
 	expect(() => parseLineSelector("5:0")).toThrowError(
-		"Range end must be positive or negative, not zero",
+		"range end must be positive or negative, not zero",
 	);
 });
 
@@ -250,13 +227,6 @@ test("Should throw error on invalid range end", () => {
 	);
 });
 
-test("Should throw error on positive range with start > end", () => {
-	expect(() => parseLineSelector("10:5")).toThrowError(
-		"Range start (10) must be less than or equal to range end (5)",
-	);
-});
-
-// Old dash syntax errors
 test("Should throw error on old dash syntax", () => {
 	expect(() => parseLineSelector("2-4")).toThrowError(
 		"BREAKING CHANGE: The dash syntax '2-4' inside brackets is no longer supported",
@@ -273,20 +243,13 @@ test("Should allow negative numbers (not old dash syntax)", () => {
 	expect(() => parseLineSelector("-5")).not.toThrow();
 });
 
-// Empty/whitespace
 test("Should handle empty selector", () => {
-	const result = parseLineSelector("");
-	expect(result.selections).toHaveLength(0);
-	expect(result.hasNegativeIndexing).toBe(false);
-	expect(result.hasExclusions).toBe(false);
+	expect(parseLineSelector("")).toHaveLength(0);
 });
 
 test("Should handle colon-only selector", () => {
-	const result = parseLineSelector(":");
-	expect(result.selections).toHaveLength(0);
+	expect(parseLineSelector(":")).toHaveLength(0);
 });
-
-// ============= RESOLUTION TESTS =============
 
 test("Should resolve basic range", () => {
 	const parsed = parseLineSelector("2:5");
@@ -312,7 +275,6 @@ test("Should resolve negative ranges correctly", () => {
 	expect(resolved).toEqual([6, 7, 8, 9]); // Lines 6-9 (last 4 lines excluding last line)
 });
 
-// NEW: Mixed positive/negative resolution tests
 test("Should resolve mixed positive to negative range", () => {
 	const parsed = parseLineSelector("2:-5");
 	const resolved = resolveLineSelections(parsed, 10);
@@ -337,7 +299,6 @@ test("Should resolve mixed positive and negative", () => {
 	expect(resolved).toEqual([2, 3, 4, 5, 8, 9, 10]);
 });
 
-// NEW: Edge cases for mixed ranges
 test("Should handle mixed range that results in valid selection", () => {
 	const parsed = parseLineSelector("8:-2");
 	const resolved = resolveLineSelections(parsed, 10);
@@ -350,7 +311,6 @@ test("Should handle mixed range with exclusions", () => {
 	expect(resolved).toEqual([1, 2, 9, 10]); // Lines 1-10, excluding lines 3-8 (since -3 = line 8)
 });
 
-// Error cases for resolution
 test("Should throw error on out of range single line", () => {
 	const parsed = parseLineSelector("15");
 	expect(() => resolveLineSelections(parsed, 10)).toThrowError(

@@ -1,14 +1,11 @@
 import { expect, test } from "vitest";
-import type { ParsedLineSelector } from "./ParsedLineSelector.js";
+import type { LineSelection } from "./LineSelection.js";
 import { applyLineSelection } from "./applyLineSelection.js";
 import { parseLineSelector } from "./parseLineSelector.js";
 
-// Helper function to create parsed selectors for testing
-function createParsedSelector(selector: string): ParsedLineSelector {
+function createParsedSelector(selector: string): LineSelection[] {
 	return parseLineSelector(selector);
 }
-
-// ============= BASIC TESTS =============
 
 test("It should apply single line selection", () => {
 	const file = "line1\nline2\nline3\nline4\nline5";
@@ -98,8 +95,6 @@ test("It should apply open-ended range to negative end", () => {
 	expect(result).toEqual("line1\nline2\nline3\nline4"); // All except last line
 });
 
-// ============= NEW: MIXED POSITIVE/NEGATIVE TESTS =============
-
 test("It should apply mixed positive to negative range", () => {
 	const file =
 		"line1\nline2\nline3\nline4\nline5\nline6\nline7\nline8\nline9\nline10";
@@ -139,14 +134,12 @@ test("It should handle mixed range with reverse order", () => {
 	const file = "line1\nline2\nline3\nline4\nline5";
 	const includeExampleFile = {
 		path: "test/file",
-		parsedSelector: createParsedSelector("-2:3"),
+		parsedSelector: createParsedSelector("-2:2"),
 	};
 
 	const result = applyLineSelection(file, includeExampleFile);
-	expect(result).toEqual(""); // Line 4 (5 - 2 + 1 = 4) to line 3, but 4 > 3, so empty
+	expect(result).toEqual("line1\nline2\nline4\nline5");
 });
-
-// ============= MULTIPLE SELECTIONS TESTS =============
 
 test("It should apply multiple selections", () => {
 	const file = "line1\nline2\nline3\nline4\nline5\nline6";
@@ -181,8 +174,6 @@ test("It should apply mixed positive and negative selections", () => {
 	const result = applyLineSelection(file, includeExampleFile);
 	expect(result).toEqual("line1\nline2\nline3\nline8\nline9\nline10");
 });
-
-// ============= EXCLUSION TESTS =============
 
 test("It should apply single line exclusions", () => {
 	const file = "line1\nline2\nline3\nline4\nline5";
@@ -239,8 +230,6 @@ test("It should handle only exclusions (include all then exclude)", () => {
 	const result = applyLineSelection(file, includeExampleFile);
 	expect(result).toEqual("line1\nline5");
 });
-
-// ============= EDGE CASES =============
 
 test("It should handle empty file", () => {
 	const file = "";
@@ -299,8 +288,6 @@ test("It should handle complex mixed positive and negative selections", () => {
 	expect(result).toEqual("line1\nline3\nline5\nline6\nline7\nline8\nline10");
 });
 
-// ============= ERROR CASES =============
-
 test("It should throw error on out of range line", () => {
 	const file = "line1\nline2\nline3";
 	const includeExampleFile = {
@@ -325,8 +312,6 @@ test("It should throw error on out of range negative line", () => {
 	);
 });
 
-// ============= PERFORMANCE TESTS =============
-
 test("It should handle complex selections on large files", () => {
 	// Create a file with 100 lines
 	const lines = Array.from({ length: 100 }, (_, i) => `line${i + 1}`);
@@ -349,7 +334,6 @@ test("It should handle complex selections on large files", () => {
 });
 
 test("It should handle negative indexing on large files", () => {
-	// Create a file with 500 lines
 	const lines = Array.from({ length: 500 }, (_, i) => `line${i + 1}`);
 	const file = lines.join("\n");
 

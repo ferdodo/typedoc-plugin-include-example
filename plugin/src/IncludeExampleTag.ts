@@ -1,6 +1,6 @@
-import type { ParsedLineSelector } from "./ParsedLineSelector.js";
+import type { LineSelection } from "./LineSelection.js";
 
 export type IncludeExampleTag = {
 	path: string;
-	parsedSelector?: ParsedLineSelector;
+	parsedSelector?: LineSelection[];
 };

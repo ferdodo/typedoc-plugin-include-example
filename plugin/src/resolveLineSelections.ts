@@ -1,19 +1,15 @@
 import type { LineSelection } from "./LineSelection.js";
-import type { ParsedLineSelector } from "./ParsedLineSelector.js";
+import { resolveRange } from "./resolveRange.js";
 
 export function resolveLineSelections(
-	parsed: ParsedLineSelector,
+	selections: LineSelection[],
 	totalLines: number,
 ): number[] {
-	if (totalLines <= 0) {
-		return [];
-	}
-
 	const includedLines = new Set<number>();
 	const excludedLines = new Set<number>();
 
 	// Process all selections
-	for (const selection of parsed.selections) {
+	for (const selection of selections) {
 		const lines = resolveSelection(selection, totalLines);
 		const targetSet = selection.isExclusion ? excludedLines : includedLines;
 		for (const line of lines) {
@@ -22,7 +18,7 @@ export function resolveLineSelections(
 	}
 
 	// If no inclusions specified, include all lines
-	if (shouldIncludeAllLines(parsed)) {
+	if (selections.every((s) => s.isExclusion)) {
 		for (let i = 1; i <= totalLines; i++) {
 			includedLines.add(i);
 		}
@@ -45,7 +41,7 @@ function resolveSelection(
 		case "single":
 			return resolveLine(selection, totalLines);
 		case "range":
-			return resolveRange(selection, totalLines);
+			return Array.from(resolveRange(selection, totalLines));
 	}
 }
 
@@ -65,50 +61,4 @@ function resolveLine(
 	}
 
 	return [line];
-}
-
-function resolveRange(
-	selection: LineSelection & { type: "range" },
-	totalLines: number,
-): number[] {
-	let start = selection.start;
-	let end = selection.end;
-
-	// Convert negative index to positive index
-	if (start !== undefined && start < 0) {
-		start = totalLines + start + 1;
-	}
-	if (end !== undefined && end < 0) {
-		end = totalLines + end + 1;
-	}
-
-	// Default to full range if not specified
-	if (start === undefined) start = 1;
-	if (end === undefined) end = totalLines;
-
-	// Validate bounds - be more lenient for empty files
-	if (totalLines === 0) {
-		return [];
-	}
-
-	// Clamp to valid range
-	start = Math.max(1, Math.min(start, totalLines));
-	end = Math.max(1, Math.min(end, totalLines));
-
-	if (start > end) {
-		return [];
-	}
-
-	const result: number[] = [];
-	for (let i = start; i <= end; i++) {
-		result.push(i);
-	}
-	return result;
-}
-
-function shouldIncludeAllLines(parsed: ParsedLineSelector): boolean {
-	return (
-		parsed.selections.length === 0 ||
-		parsed.selections.every((s) => s.isExclusion)
-	);
 }
