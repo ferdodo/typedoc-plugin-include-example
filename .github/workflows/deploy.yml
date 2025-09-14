@@ -32,7 +32,7 @@ jobs:
       - name: Install and Build demo 🔧
         run: |
           npm install
-          npm install ../plugin/typedoc-plugin-include-example-3.0.0.tgz
+          npm install ../plugin/typedoc-plugin-include-example-3.0.2.tgz
           npm audit --audit-level=low
           npm run build
           cp -r ../plugin/reports ./docs/reports

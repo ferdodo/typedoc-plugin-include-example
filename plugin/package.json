@@ -1,6 +1,6 @@
 {
 	"name": "typedoc-plugin-include-example",
-	"version": "3.0.0",
+	"version": "3.0.2",
 	"license": "MIT",
 	"type": "module",
 	"description": "Typedoc plugin to include files as example",
@@ -24,7 +24,7 @@
 		"Sanjeev Penupala (https://github.com/spenpal)"
 	],
 	"scripts": {
-		"build": "tsc --noEmit && vitest run && biome ci && exportcase check src && stryker run && tsc",
+		"build": "tsc --noEmit && tsc --noEmit -p test.tsconfig.json && vitest run && biome ci && exportcase check src && stryker run && tsc",
 		"format": "biome format --write .",
 		"docker": "docker compose up -d --build",
 		"build:docker": "npm run format && npm run docker"

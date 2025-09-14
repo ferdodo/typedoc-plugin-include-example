@@ -13,5 +13,5 @@
 		"rootDir": "src",
 		"lib": ["ES2020", "DOM"]
 	},
-	"exclude": ["vitest.config.ts"]
+	"exclude": ["vitest.config.ts", "./src/**.test.ts"]
 }
