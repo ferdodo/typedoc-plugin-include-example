@@ -251,6 +251,81 @@ test("Should handle colon-only selector", () => {
 	expect(parseLineSelector(":")).toHaveLength(0);
 });
 
+test("Should handle whitespace-padded selector", () => {
+	const result = parseLineSelector("  5  ");
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
+		type: "single",
+		isExclusion: false,
+		line: 5,
+	});
+});
+
+test("Should handle spaces around comma-separated parts", () => {
+	const result = parseLineSelector("2:5, 10");
+	expect(result).toHaveLength(2);
+	expect(result[0]).toEqual({
+		type: "range",
+		isExclusion: false,
+		start: 2,
+		end: 5,
+	});
+	expect(result[1]).toEqual({
+		type: "single",
+		isExclusion: false,
+		line: 10,
+	});
+});
+
+test("Should skip empty parts from trailing comma", () => {
+	const result = parseLineSelector("2:5,");
+	expect(result).toHaveLength(1);
+	expect(result[0]).toEqual({
+		type: "range",
+		isExclusion: false,
+		start: 2,
+		end: 5,
+	});
+});
+
+test("Should skip empty parts from double comma", () => {
+	const result = parseLineSelector("2:5,,10");
+	expect(result).toHaveLength(2);
+	expect(result[1]).toEqual({
+		type: "single",
+		isExclusion: false,
+		line: 10,
+	});
+});
+
+test("Should detect old dash syntax with spaces around parts", () => {
+	expect(() => parseLineSelector("2-4 , 10")).toThrowError("BREAKING CHANGE");
+});
+
+test("Should handle whitespace around exclusion part", () => {
+	const result = parseLineSelector("1:10, !5");
+	expect(result).toHaveLength(2);
+	expect(result[1]).toEqual({
+		type: "single",
+		isExclusion: true,
+		line: 5,
+	});
+});
+
+test("Should handle negative number with trailing characters as old dash syntax", () => {
+	expect(() => parseLineSelector("-5-3")).toThrowError("BREAKING CHANGE");
+});
+
+test("Should not flag negative number with leading space as old dash syntax", () => {
+	const result = parseLineSelector("1, -5");
+	expect(result).toHaveLength(2);
+	expect(result[1]).toEqual({
+		type: "single",
+		isExclusion: false,
+		line: -5,
+	});
+});
+
 test("Should resolve basic range", () => {
 	const parsed = parseLineSelector("2:5");
 	const resolved = resolveLineSelections(parsed, 10);
