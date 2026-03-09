@@ -21,7 +21,7 @@
 		"Jeremy Cherer (https://github.com/JavaLavaMT)",
 		"Rocky Warren (https://github.com/therockstorm)",
 		"Gerrit Birkeland (https://github.com/Gerrit0)",
-		"Sanjeev Penupala (https://github.com/spenpal)"
+		"Sanjeev Penupala (https://github.com/sanjeevpenupala)"
 	],
 	"scripts": {
 		"build": "tsc --noEmit && tsc --noEmit -p test.tsconfig.json && vitest run && biome ci && exportcase check src && stryker run && tsc",
